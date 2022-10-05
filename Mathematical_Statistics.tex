@@ -1,0 +1,1919 @@
+% \documentclass[a4paper,10pt]{article} % or whatever
+% \documentclass[letterpaper,10pt]{article} % or whatever
+\documentclass{article}
+
+% if you need to pass options to natbib, use, e.g.:
+     \PassOptionsToPackage{numbers, compress}{natbib}
+
+\usepackage[preprint]{neurips_2021}
+% \usepackage{newtxmath}
+\newcommand{\ignore}[1]{}
+% to avoid loading the natbib package, add option nonatbib:
+\usepackage{dsfont}
+\input{preamble}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+%  \usepackage{subfigure} 
+\pdfminorversion=7
+
+%\floatname{algorithm}{Procedure}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\newcommand{\bsl}[1]{\boldsymbol{#1}}
+\newcommand{\one}[1]{\norm{#1}_{1}}
+\newcommand{\bfs}[1]{\textbf{({#1}) }}
+\newcommand{\typss}{\mathcal{P}_n}
+\newcommand{\boxx}[1]{\noindent\fbox{%
+    \parbox{\textwidth}{%
+        	#1
+    }%
+}} 
+% \usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+    \node[shape=circle, draw, inner sep=0.1pt, 
+        minimum height=5pt] (char) {\vphantom{1g}#1};}}
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage{microtype}      % microtypography
+
+\title{Mathematical Statistics}
+\usepackage{titlesec}
+\usepackage{fancyvrb}
+\setcounter{tocdepth}{4}
+\setcounter{secnumdepth}{4}
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+\crefname{paragraph}{section}{sections}
+% \makeatletter
+% \newcommand\paragraph{\@startsection{paragraph}{4}{\z@}{-2.5ex\@plus -1ex \@minus -.25ex}{1.25ex \@plus .25ex}{\normalfont\normalsize\bfseries}}
+% \newcommand\subparagraph{\@startsection{subparagraph}{5}{\z@}{-2.5ex\@plus -1ex \@minus -.25ex}{1.25ex \@plus .25ex}{\normalfont\normalsize\bfseries}}
+% \makeatother
+
+\usepackage{amsmath}
+\usepackage{pifont}
+\newcommand{\cmark}{\text{\ding{51}}}
+\newcommand{\xmark}{\text{\ding{55}}}
+\newcommand{\gp}{\operatorname{gp}}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\Sym}{\operatorname{Sym}}
+\newcommand{\Stab}{\operatorname{Stab}}
+\newcommand{\Orb}{\operatorname{Orb}}
+\newcommand{\HCF}{\operatorname{HCF}}
+\newcommand{\LCM}{\operatorname{LCM}}
+\newcommand{\Alt}{\operatorname{Alt}}
+\newcommand{\Isom}{\operatorname{Isom}}
+\newcommand{\GL}{\operatorname{GL}}
+\newcommand{\Ker}{\operatorname{Ker}}
+\newcommand{\Conj}{\operatorname{Conj}}
+\newcommand{\Conv}{\operatorname{Conv}}
+\newcommand{\cl}{\operatorname{cl}}
+\newcommand{\ri}{\operatorname{ri}}
+\newcommand{\inte}{\operatorname{int}}
+\newcommand{\Aff}{\operatorname{Aff}}
+\newcommand{\Cone}{\operatorname{Cone}}
+\newcommand{\dom}{\operatorname{dom}}
+\newcommand{\Ext}{\operatorname{Ext}}
+\newcommand{\rb}{\partial_{\mathrm{ri}}}
+\newcommand{\Epi}{\operatorname{Epi} }
+% \newcommand{\Ima}{\operatorname{Im}}
+% \newcommand{\Id}{\operatorname{Id}}
+\begin{document}
+
+\maketitle
+
+\section{Statistical Models, Goals, and Performance Criteria}
+\subsection{Data, Models, Parameters and Statistics}
+The particular angle of mathematical statistics is to view data, which consist of scalars, vectors, matrix or even functions, as the outcome of a random experiment that we model mathematically. Subject matter specialists usually have to be principal guides in model formulation. ``Models of course, are never true but fortunately it is only necessary that they be useful.''
+\subsubsection{Example}\label{sssec:example}
+We consider several examples which will be studied thoroughly in this note. 
+\paragraph{Sampling Inspection.}
+\begin{exma}\label{ex:inspection}
+We are faced with a population of $N$ elements. The sample space consists of the numbers $0,1, \ldots, n$ corresponding to the number of defective items found. On this space we can define a random variable $X$ given by $X(k)=k, k=0,1, \ldots, n$. If $N \theta$ is the number of defective items in the population sampled, then we have 
+\begin{align*}
+\begin{aligned}
+&P[X=k]=\frac{\left(\begin{array}{c}
+N \theta \\
+k
+\end{array}\right)\left(\begin{array}{c}
+N-N \theta \\
+n-k
+\end{array}\right)}{\left(\begin{array}{c}
+N \\
+n
+\end{array}\right)} \\
+&\text { if } \max (n-N(1-\theta), 0) \leq k \leq \min (N \theta, n)
+\end{aligned}
+\end{align*}
+Thus, $X$ has an \tb{hypergeometric, $\mathcal{H}(N \theta, N, n)$ distribution.}
+\end{exma}
+\begin{rema}
+Note here $N \theta$ is unknown and, in principle, can take on any value between $0$ and $N$. So, although the sample space is well defined, we cannot specify the probability structure completely but rather only give a \tb{family} $\{\mathcal{H}(N \theta, N, n)\}$ of probability distributions for $X$, any one of which could have generated the data actually observed.
+\end{rema}
+
+\paragraph{Sample from a Population}
+\begin{exma}\label{ex:Population}
+A sample of $n$ individuals is drawn at random from the population. We consider quantitative measure, e.g. height or income, rather than simply recording "defective" or not. 
+ Here we consider limiting case in which $N=\infty$, so that sampling with replacement replaces sampling without. Formally, if the measurements are scalar, we observe $x_{1}, \ldots, x_{n}$, which are modeled as \tb{realizations of $X_{1}, \ldots, X_{n}$ \gls{iid} random variables }with common unknown distribution function $F .$ We often refer to such $X_{1}, \ldots, X_{n}$ as \tb{a random sample} from $F$, and also write that $X_{1}, \ldots, X_{n}$ are \gls{iid} as $X$ with $X \sim F$, where " $\sim "$ stands for "is distributed as." The model is fully described by the set $\mathcal{F}=\{F\}$ of distributions that we specify. 
+ \end{exma}
+\paragraph{One-Sample Models}
+\begin{exma}\label{ex:onesample}
+An experimenter makes $n$ independent determinations of the value of a physical constant $\mu$. His or her measurements are subject to random fluctuations (error) and the data can be thought of as  $\mu$ plus some random errors. We write
+\begin{align*}
+X_{i}=\mu+\epsilon_{i}, 1 \leq i \leq n
+\end{align*}
+where $\epsilon=\left(\epsilon_{1}, \ldots, \epsilon_{n}\right)^{T}$ is the vector of random errors. 
+\end{exma} 
+Often we need to make more assumptions for the model:
+\begin{assuma}\bfs{for One-Sample Models}
+
+\begin{enumerate}[(1).]
+    \item \tb{independent:} The value of the error committed on one determination does not affect the value of the error at other times. That is, $\epsilon_{1}, \ldots, \epsilon_{n}$ are independent.
+    \item \tb{\gls{iid}}: The distribution of the error at one determination is the same as that at another. Thus, $\epsilon_{1}, \ldots, \epsilon_{n}$ are identically distributed.
+\item 
+\tb{zero mean or symmetry of noise:} 
+\begin{itemize}
+\item $\epsilon$ does not depends on $\mu$
+    \item Let $G$ be the distribution function of $\epsilon_{1}$ and $F$ that of $X_{1}$, then
+\begin{align*}
+F(x)=G(x-\mu)
+\end{align*}
+\item The model is specified by $\mathcal{F}=\{F\}$, or by $\{(\mu, G)$ : $\mu \in R, G \in \mathcal{G}\}$ where $\mathcal{G}$ is the set of all allowable error distributions. Commonly  $\mathcal{G}$ contains all distributions with center of symmetry $0$ , or alternatively all distributions with expectation $0$. 
+\end{itemize}
+\item \tb{Gaussian: }  
+Often, we assume the common distribution of the errors is $\mathcal{N}\left(0, \sigma^{2}\right)$, where $\sigma^{2}$ is unknown, i.e. $\mathcal{F}=\left\{\Phi\left(\frac{-\mu}{\sigma}\right): \mu \in\right.$ $R, \sigma>0\}$ where $\Phi$ is the standard normal distribution.
+
+\end{enumerate}
+\end{assuma}
+\begin{rema}
+It is important to remember that these are assumptions at best only approximately valid. All actual measurements are discrete rather than continuous. There are absolute bounds on most quantities-100 $\mathrm{ft}$ high men are impossible. Heights are always nonnegative. The Gaussian distribution, whatever be $\mu$ and $\sigma$, will have none of this.
+\end{rema}
+\paragraph{Two-Sample Models}
+\begin{exma}\label{ex:twosample} We have two sampling:
+\begin{itemize}
+    \item Let $x_{1}, \ldots, x_{m}$ be the responses of $m$ subjects having a given disease given drug $A$.
+    \item Let $y_{1}, \ldots, y_{n}$ be the responses of $n$ subjects having other similar diseases given drug $B$.
+\end{itemize}
+By convention, if $\operatorname{drug} A$ is a standard or placebo, we refer to the $x$'s as \tb{control observations.} Often, we let the $y$ 's denote the responses of subjects given a new drug or treatment that is being evaluated by comparing its effect with that of the placebo. We call the $y$ 's \tb{treatment observations}.
+\end{exma}
+\begin{assuma}\bfs{for Two-Sample Models}
+
+\begin{enumerate}[(1).]
+\item \tb{independent:}  The $x$ 's and $y$ 's are realizations of independent $X_{1}, \ldots, X_{m}$, a sample from $F$, and independent $Y_{1}, \ldots, Y_{n}$, a sample from $G$. So the model is specified by the set of possible $(F, G)$ pairs.
+\item \tb{shift:} Suppose that if treatment $A$ had been administered to a subject response $x$ would have been obtained. Then if treatment $B$ had been administered to the same subject instead of treatment $A$, response $y=x+\Delta$ would be obtained where $\Delta$ does not depend on $x$. This implies that if $F$ is the distribution of a control, then $G(\cdot)=F(\cdot-\Delta)$. We call this the \tb{shift model with parameter $\Delta$.}
+\item \tb{Gaussian:} The control responses are normally distributed. Then if $F$ is the $\mathcal{N}\left(\mu, \sigma^{2}\right)$ distribution and $G$ is the $\mathcal{N}\left(\mu+\Delta, \sigma^{2}\right)$ distribution, we have specified the Gaussian two sample model with equal variances.
+\end{enumerate}
+\end{assuma}
+
+\paragraph{Summary and Mathematics Definition of Experiments}
+$\bullet$ \tb{Summary: }
+We often conduct experiments and get observation data, we often make assumptions for the underlying unknown distribution that generates the data.  
+\begin{itemize}
+    \item Benefits: If they are true, we know how to combine our measurements to estimate µ in a highly efﬁcient way and also assess the accuracy of our estimation procedure
+    \item Danger: If they are false, our analyses, though correct for the model written down, may be quite irrelevant to the experiment that was actually performed. We have little control over what kind of distribution of errors we actually get and will need to investigate the properties of methods derived from specific error distribution assumptions when these assumptions are violated.
+\end{itemize}
+
+$\bullet$ \tb{Definition: }
+\begin{itemize}
+    \item \tb{sample space:} We are given a random experiment with  outcome sample space $\Omega$.
+    \item  \tb{observations: } On this sample space we define a random vector $\mathbf{X}=\left(X_{1}, \ldots, X_{n}\right) .$ When $\omega$ is the outcome of the experiment, $\mathbf{X}(\omega)$ is referred to as the observations or data. It is often convenient to identify the random vector $\mathbf{X}$ with its realization, the data $\mathbf{X}(\omega)$.  
+    
+    ``\emph{Note, in this notes we often say $\cal{X}\coloneqq \mathbf{X}$ $(\Omega)$ be the \tb{sample space}, when not ambiguous}''
+    
+    \item  \tb{distribution: } Since it is only $\mathbf{X}$ that we observe, we need only consider its probability distribution (instead of the distribution over $\Omega$). 
+    \item \tb{model:} This distribution is assumed to be a member of a family $\mathcal{P}$ of probability distributions on $R^{n} . \mathcal{P}$ is referred to as the model.
+\end{itemize}
+\begin{exma}
+ For instance, in \cref{ex:inspection}, we observe $X$ and the family $\mathcal{P}$ is that of all hypergeometric distributions with sample size $n$ and population size $N$.
+\end{exma}
+\subsubsection{Parametrizations and Parameters}
+\paragraph{Parameters and Identifiability}
+\begin{defa}
+To describe model $\mathcal{P}$ we use a \tb{parametrization}, that is, a map, $\theta \rightarrow P_{\theta}$ from a space of labels, the parameter space $\Theta$, to $\mathcal{P}$; or equivalently write $\mathcal{P}=\left\{P_{\theta}: \theta \in \Theta\right\}$.
+\end{defa} 
+\begin{exma}We explain use the examples in \cref{sssec:example}
+\begin{enumerate} 
+    \item  In \cref{ex:inspection} we take $\theta$ to be the fraction of defectives in the shipment, $\Theta=\left\{0, \frac{1}{N}, \ldots, 1\right\}$ and $P_{\theta}$ the $\mathcal{H}(N \theta, N, n)$ distribution. 
+    \item In \cref{ex:onesample}:
+    \begin{itemize}
+        \item With assumptions (1)-(4) we have $\Theta=R \times R^{+}$and, if $\theta=\left(\mu, \sigma^{2}\right), P_{\theta}$ the distribution on $R^{n}$ with density $\prod_{i=1}^{n} \frac{1}{\sigma} \varphi\left(\frac{x_{i}-\mu}{\sigma}\right)$ where $\varphi$ is the standard normal density. 
+        \item With only assumptions (1)-(3) that $\epsilon$ having expectation 0, we can take $\Theta=\left\{(\mu, G): \mu \in R, G\right.$ with density $g$ such that $\left.\int x g(x) d x=0\right\}$ and $P_{(\mu, G)}$ has density $\prod_{i=1}^{n} g\left(x_{i}-\mu\right)$.
+    \end{itemize} 
+\end{enumerate}
+\end{exma}
+
+What parametrization we choose is usually suggested by the phenomenon we are modeling; $\theta$ is the fraction of defectives, $\mu$ is the unknown constant being measured. However, as we shall see later, the first parametrization we arrive at is not necessarily the one leading to the simplest analysis. We may take any one-to-one function of $\theta$ as a new parameter.
+\begin{defa}\bfs{Identifiable}
+ We need to ensure that our parametrizations are \tb{identifiable}:  $\theta_{1} \neq \theta_{2} \Rightarrow P_{\theta_{1}} \neq P_{\theta_{2}}$, that is, the map $\theta \rightarrow P_{\theta}$ is a \tb{$1$-$1$ mapping}. 
+\end{defa}
+
+ 
+$\bullet$ \tb{Why?}
+
+In \tb{unidentifiable} case, we can have $\theta_{1} \neq \theta_{2}$ and yet $P_{\theta_{1}}=P_{\theta_{2}}$. The critical problem with such parametrizations is that even with "infinite amounts of data," that is, knowledge of the true $P_{\theta}$, parts of $\theta$ remain unknowable. 
+
+
+\begin{exma} We give examples for better understanding:
+\begin{itemize}
+    \item For instance, in  \cref{ex:onesample} suppose that we permit $G$ to be arbitrary: $\Theta=\{(\mu, G): \mu \in R, G$ has (arbitrary) density $g\}$. Now the parametrization is \tb{unidentifiable} because, for example, $\mu=0$ and $\mathcal{N}(0,1)$ errors lead to the same distribution of the observations as $\mu=1$ and $\mathcal{N}(-1,1)$ errors. 
+    \item In exponential family, we often need full rank model, i.e. identifiable.
+\end{itemize}
+\end{exma}
+
+\paragraph{Parametric, Semiparametric and nonparametric:}
+\begin{itemize}
+\item \tb{parametric:} When we can take $\Theta$ to be a nice subset of Euclidean space and the maps $\theta \mapsto P_{\theta}$ are smooth, in the case a set of parameters that \tb{fully specifies} the distribution, models $\mathcal{P}$ are called parametric. 
+    \item \tb{semiparametric:}  Models such as that of \cref{ex:onesample} with assumptions (1)-(3) are called semiparametric, which does not fully specifies the distribution.
+    \item \tb{nonparametric:} Finally, models such as that of \cref{ex:twosample} with only (1) holding and $F, G$ taken to be arbitrary are called nonparametric. It's important to note that even nonparametric models still make substantial assumptions: in \cref{ex:twosample} that $X_{1}, \ldots, X_{m}$ are independent of each other and $Y_{1}, \ldots, Y_{n}$; moreover, $X_{1}, \ldots, X_{m}$ are identically distributed as are $Y_{1}, \ldots, Y_{n}$.
+\end{itemize} 
+\begin{rema}
+Assume that the distribution can be anything is of course nonparametric but is useless.
+\end{rema}
+\begin{exma}We give some examples:
+\begin{enumerate}
+    \item A linear model is clearly parametric because, no matter how much data you have, the number of parameters is given by the number of features.
+\item A nonlinear SVM is nonparametric, because by the representer’s theorem the number of terms in the kernel expansion grows linearly with the number of points in the training dataset.
+\item A Gaussian Process (GP) is also nonparametric because you are playing directly with distributions over functions.
+\item A neural network is somewhat in the middle: if you fix the number of neurons, you clearly have a fixed number of parameters, but in the limit of infinite neurons you can interpret them in the context of both SVMs and GPs. A standard DNN is, technically speaking, parametric since it has a fixed number of parameters. However, most DNNs have so many parameters that they could be interpreted as nonparametric; 
+\end{enumerate}
+\end{exma}
+
+\paragraph{Parameter vs Parametrizations}
+\begin{defa}\label{def:para}
+ A \tb{parameter} is a feature $\nu(P)$ of the distribution of $X$.
+\end{defa} 
+\begin{exma}
+For instance, in \cref{ex:Population}, the fraction of defectives $\theta$ can be thought of as the mean of $X / n$. In \cref{ex:twosample} with assumptions (1)-(2) we are interested in $\Delta$, which can be thought of as the difference in the means of the two populations of responses. 
+\end{exma}
+\begin{exma}\bfs{nuisance parameters}
+They correspond to other unknown features of the distribution of $\mathbf{X}$ than the parameters of interest. For instance, in \cref{ex:onesample}, if the errors are normally distributed with unknown variance $\sigma^{2}$, then $\sigma^{2}$ is a nuisance parameter because we only care the mean $\mu$. 
+\end{exma}
+$\bullet$ \tb{Duality:}
+
+Parameter and parametrizations are dual concepts:
+\begin{itemize}
+    \item \tb{parametrization: a map from some $\Theta$ to $\mathcal{P}$;}
+    \item \tb{parameter: a map $\nu$, from $\mathcal{P}$ to another space $\mathcal{N}$.}
+\end{itemize}
+In many cases:
+\begin{enumerate}
+    \item We usually try to use a single grand \tb{parameter} $\theta$ (as defined in \cref{def:para}, combing parameters of interest and nuisance parameters) to index the family $\mathcal{P}$, that is, make $\theta \rightarrow P_{\theta}$ into a \tb{parametrization} of $\mathcal{P}$.
+    \item Given a parametrization $\theta \rightarrow P_{\theta}, \theta$ is a parameter \tb{if and only if the parametrization is identifiable.} 
+\end{enumerate}
+
+
+
+
+\tb{Summary:} Formally, we can define the (well defined) parameter $\theta: \mathcal{P} \rightarrow \Theta$ as the \tb{inverse} of the map $\theta \mapsto P_{\theta}$, from $\Theta$ to its range $\mathcal{P}$ iff the latter map is 1-1, that is, if $P_{\theta_{1}}=P_{\theta_{2}}$ implies $\theta_{1}=\theta_{2}$. It mean $\theta\left(P_{\theta}\right)=\theta$.
+
+$\bullet$ \tb{Generalization of Parameter:}
+
+More generally, a function $q: \Theta \rightarrow \mathcal{N}$ can be identified with a parameter $\nu(P)$, (i.e. $\nu\left(P_{\theta}\right) \equiv q(\theta)$) iff $P_{\theta_{1}}=P_{\theta_{2}}$ implies $q\left(\theta_{1}\right)=q\left(\theta_{2}\right)$. Note here $q(\cdot)$ and $P_{(\cdot)}$ are not necessarily 1-1.
+
+\begin{rema}
+A vector parametrization that is unidentifiable may still have components that are parameters (identifiable (means unique) given a specific distribution). For instance, consider \cref{ex:onesample} again in which we assume the error $\epsilon$ to be Gaussian but with arbitrary mean $\Delta$. Then $P$ is parametrized by $\theta=\left(\mu, \Delta, \sigma^{2}\right)$ is not unidentifiable and neither $\mu$ nor $\Delta$ are parameters in the sense we've defined. But $\sigma^{2}=\operatorname{Var}\left(X_{1}\right)$ evidently is and so is $\mu+\Delta$.
+\end{rema}
+
+\subsubsection{Statistics as Functions on the Sample Space}
+Models and parametrizations are creations of the statistician, but the true values of parameters are secrets of nature. Our aim is to use the data inductively, to narrow down in useful ways our ideas of what the "true" $P$ is. The link for us are things we can compute, that is statistics. 
+\begin{defa}\bfs{Statistic}
+ A \tb{statistic} $T$ is a map from the sample space $\mathcal{X}$ to some space $\mathcal{T}$.
+\end{defa}
+\begin{rema}
+$\mathcal{T}$ is usually a Euclidean space, but in some case are function space like the empirical distribution function or the likelihood function.
+\end{rema}
+\begin{exma} We give some examples:
+\begin{enumerate}
+    \item \tb{sample mean and sample variance:} In \cref{ex:onesample} a common estimate of $\mu$ is the statistic $T\left(X_{1}, \ldots, X_{n}\right)=\bar{X} \equiv \frac{1}{n} \sum_{i=1}^{n} X_{i}$, a common estimate of $\sigma^{2}$ is the statistic
+\begin{align*}
+s^{2} \equiv \frac{1}{n-1} \sum_{i=1}^{n}\left(X_{i}-\bar{X}\right)^{2}
+\end{align*}
+\item \tb{empirical distribution function:} 
+\begin{align*}
+\widehat{F}\left(X_{1}, \ldots, X_{n}\right)(x)=\frac{1}{n} \sum_{i=1}^{n} \indicate{X_{i} \leq x}
+\end{align*}
+where $\left(X_{1}, \ldots, X_{n}\right)$ are a sample from a probability $P$ on $R$. This statistic is an estimation of 
+\begin{align*}
+F(P)(x)=P\left[X_{1} \leq x\right] .
+\end{align*}
+\end{enumerate}
+\end{exma}
+\begin{rema}
+Deciding which statistics are important is closely connected to deciding which parameters are important. There are also situations, like sequential analysis and experimental design, in which selection of what data will be observed depends on the experimenter and on his or her methods of reaching a conclusion.
+\end{rema}
+\subsubsection{Examples, Regression Models}
+We end this section with two further important examples indicating the wide scope of the notions we have introduced.
+\paragraph{Regression Models}\label{sssec:regress}
+We observe $\left(\mathbf{z}_{1}, Y_{1}\right), \ldots,\left(\mathbf{z}_{n}, Y_{n}\right)$ where $Y_{1}, \ldots, Y_{n}$ are independent. 
+\begin{enumerate}
+    \item $\mathbf{z}_{i}$ is a nonrandom vector of values called a \tb{covariate vector} or a vector of \tb{explanatory variables}: it gives characteristics such as sex, age, height, weight, and so on of the $i$ th subject in a study. 
+    \item $Y_{i}$ is random and referred to as the \tb{response variable} or \tb{dependent variable} in the sense that its distribution depends on $\mathbf{z}_{i}$.
+    \item If we let $f\left(y_{i} \mid \mathbf{z}_{i}\right)$ denote the density of $Y_{i}$ for a subject with covariate vector $\mathbf{z}_{i}$, then the model is
+\begin{align*}
+p\left(y_{1}, \ldots, y_{n}\right)=\prod_{i=1}^{n} f\left(y_{i} \mid \mathbf{z}_{i}\right) .
+\end{align*}
+\item If we let $\mu(\mathbf{z})$ denote the expected value of a response with given covariate vector $\mathbf{z}$, then we can write,
+\begin{align*}
+Y_{i}=\mu\left(\mathbf{z}_{i}\right)+\epsilon_{i}, i=1, \ldots, n
+\end{align*}
+where $\epsilon_{i}=Y_{i}-E\left(Y_{i}\right), i=1, \ldots, n$. Here $\mu(\mathbf{z})$ is an unknown function from $R^{d}$ to $R$ that we are interested in.
+\end{enumerate} 
+
+Of course we make some assumptions:
+\begin{assuma}\bfs{for Regression Models}
+
+\begin{enumerate}[(1).]
+    \item \tb{\gls{iid} noise:} The $\epsilon_{i}$ are identically distributed with distribution $F$. That is, the effect of $\mathbf{z}$ on $Y$ is through $\mu(\mathbf{z})$ only. In the two sample models this is implied by the constant treatment effect assumption. 
+    \item \tb{family of $\mu(\cdot)$:} $\mu(\mathbf{z})=g(\boldsymbol{\beta}, \mathbf{z})$ where $g$ is known except for a vector $\boldsymbol{\beta}=\left(\beta_{1}, \ldots, \beta_{d}\right)^{T}$ of unknowns. 
+    \item \tb{linear:} $g(\boldsymbol{\beta}, \mathbf{z})=\sum_{j=1}^{d} \beta_{j} z_{j}=\mathbf{z}^{T} \boldsymbol{\beta}$ so that (b) becomes
+$\left(\mathrm{b}^{\prime}\right)$
+\begin{align*}
+Y_{i}=\mathbf{z}_{i}^{T} \boldsymbol{\beta}+\epsilon_{i}, 1 \leq i \leq n .
+\end{align*}
+\item \tb{Gaussian: }  
+The noise distribution $F$ is $\mathcal{N}\left(0, \sigma^{2}\right)$ with $\sigma^{2}$ unknown. Then we have the classical \tb{Gaussian linear model}, which we can write in vector matrix form,
+\begin{align*}
+\mathbf{Y} \sim \mathcal{N}_{n}\left(\mathbf{Z} \boldsymbol{\beta}, \sigma^{2} J\right)
+\end{align*}
+where $\mathbf{Z}_{n \times d}=\left(\mathbf{z}_{1}^{T}, \ldots, \mathbf{z}_{n}^{T}\right)^{T}$ and $J$ is the $n \times n$ identity.
+
+\end{enumerate}
+\end{assuma}
+\begin{rema}\bfs{extension}
+In fact by varying our assumptions this class of models includes any situation in which we have independent but not necessarily identically distributed observations. By varying the assumptions we obtain parametric models as with (1), (3) and (4) above, semiparametric as with (1) and (2) with $F$ arbitrary, and nonparametric if we drop (1) and simply treat the $\mathbf{z}_{i}$ as a label of the completely unknown distributions of $Y_{i}$. 
+\end{rema}
+
+
+
+\paragraph{Autoregressive Errors}
+Finally, we give an example in which the responses are \tb{dependent}.
+Let $X_{1}, \ldots, X_{n}$ be the $n$ determinations of a physical constant $\mu .$ Consider the model where
+\begin{align*}
+X_{i}=\mu+e_{i}, i=1, \ldots, n
+\end{align*}
+and assume
+\begin{align*}
+e_{i}=\beta e_{i-1}+\epsilon_{i}, i=1, \ldots, n, e_{0}=0
+\end{align*}
+where $\epsilon_{i}$ are independent identically distributed with density $f .$ Here the errors $e_{1}, \ldots, e_{n}$ are dependent as are the $X$ 's. In fact we can write
+\begin{align*}
+X_{i}=\mu(1-\beta)+\beta X_{i-1}+\epsilon_{i}, i=2, \ldots, n, X_{1}=\mu+\epsilon_{1}
+\end{align*}
+We have
+\begin{align*}
+\begin{aligned}
+p\left(e_{1}, \ldots, e_{n}\right) &=p\left(e_{1}\right) p\left(e_{2} \mid e_{1}\right) p\left(e_{3} \mid e_{1}, e_{2}\right) \ldots p\left(e_{n} \mid e_{1}, \ldots, e_{n-1}\right) \\
+&=p\left(e_{1}\right) p\left(e_{2} \mid e_{1}\right) p\left(e_{3} \mid e_{2}\right) \ldots p\left(e_{n} \mid e_{n-1}\right) \\
+&=f\left(e_{1}\right) f\left(e_{2}-\beta e_{1}\right) \ldots f\left(e_{n}-\beta e_{n-1}\right)
+\end{aligned}
+\end{align*}
+Because $e_{i}=X_{i}-\mu$, the model for $X_{1}, \ldots, X_{n}$ is
+\begin{align*}
+p\left(x_{1}, \ldots, x_{n}\right)=f\left(x_{1}-\mu\right) \prod_{j=2}^{n} f\left(x_{j}-\beta x_{j-1}-(1-\beta) \mu\right)
+\end{align*}
+When $f$ is the $N\left(0, \sigma^{2}\right)$ density, we have what is called the \tb{AR(1) Gaussian model}:
+\begin{align*}
+\begin{aligned}
+&p\left(x_{1}, \ldots, x_{n}\right)= \\
+&(2 \pi)^{-\frac{1}{2} n} \sigma^{-n} \exp \left\{-\frac{1}{2 \sigma^{2}}\left[\left(x_{1}-\mu\right)^{2}+\sum_{i=2}^{n}\left(x_{i}-\beta x_{i-1}-(1-\beta) \mu\right)^{2}\right]\right\}
+\end{aligned}
+\end{align*}
+
+
+\subsubsection{Notation}
+When dependence on $\theta$ has to be observed, we shall denote the distribution corresponding to any particular parameter value $\theta$ by $P_{\theta}$.  We write
+\begin{itemize}
+    \item $E_{\theta}$: expectations calculated under the assumption that $\mathbf{X} \sim P_{\theta}$.
+    \item $F(\cdot, \theta)$: distribution functions.
+    \item $p(\cdot, \theta)$: density and frequency functions. 
+\end{itemize}
+It will be convenient to assume from now on that in any parametric model we consider either:
+\begin{enumerate}
+    \item All of the $P_{\theta}$ are continuous with densities $p(\mathbf{x}, \theta)$;
+    \item  All of the $P_{\theta}$ are discrete with frequency functions $p(\mathbf{x}, \theta)$, and the set $\left\{\mathbf{x}_{1}, \mathbf{x}_{2}, \ldots\right\}$ $\equiv\{\mathbf{x}: p(\mathbf{x}, \theta)>0\}$ is the same set for all $\theta \in \Theta .$
+\end{enumerate}
+
+Such models will be called \tb{regular parametric models}. In the discrete case we will use both the terms frequency function and density for $p(\mathbf{x}, \theta)$. Subscripts and arguments will be omitted where no confusion can arise.
+
+\begin{rema}\bfs{dominated from measure theoretic view}
+The theory of sufficiency is in an especially satisfactory state for the case in which the set $\mathfrak{M}$ of probability measures satisfies a certain condition described by the technical term dominated. A set $\mathfrak{M}$ of probability measures is called dominated if each measure in the set may be expressed as the indefinite integral of a density function with respect to a fixed measure which is not itself necessarily in the set. It is easy to verify that both classical extremes, commonly referred to as the discrete and continuous cases, are dominated w.r.t. $\nu$, with $\nu$ being a Lebesgue measure or the counting measure.
+\end{rema}
+
+\subsection{Bayesian Models}\label{sec:bayesian}
+Before going, I would like to explain a little bit about frequentist vs Bayesian:
+
+\emph{It is often said (\tb{incorrectly}) that ‘parameters are treated as fixed by the frequentist but as random by the Bayesian’. For frequentists and Bayesians alike, the value of a parameter may have been fixed from the start or may have been generated from a physically random mechanism. \tb{In either case, both suppose it has taken on some fixed value that we would like to know.} The Bayesian uses formal probability models to express personal uncertainty about that value. The ‘randomness’ in these models represents personal uncertainty about the parameter’s value; it is not a property of the parameter (although we should hope it accurately reflects properties of the mechanisms that produced the parameter).}
+\subsubsection{Definitions}
+ Suppose that we have a regular parametric model $\left\{P_{\theta}: \theta \in \Theta\right\}$. To get a Bayesian model we introduce a random vector $\theta$, whose range is contained in $\Theta$, with density or frequency function $\pi$:
+ \begin{itemize}
+
+     \item The function $\pi$ represents our belief or information about the parameter $\theta$ before the experiment and is called the \tb{prior density or frequency function}.
+     \item We now think of $P_{\theta}$ as the conditional distribution of $\mathbf{X}$ given $\boldsymbol{\theta}=\theta$. 
+     \item The \tb{joint distribution} of $(\boldsymbol{\theta}, \mathbf{X})$ is that of the outcome of a random experiment in which we first select $\theta=\theta$ according to $\pi$ and then, given $\boldsymbol{\theta}=\theta$, select $\mathbf{X}$ according to $P_{\theta}$. 
+     \item If both $\mathbf{X}$ and $\boldsymbol{\theta}$ are continuous or both are discrete, then $(\boldsymbol{\theta}, \mathbf{X})$ is  continuous or discrete with density or frequency function: 
+\begin{align*}
+f(\theta, \mathbf{x})=\pi(\theta) p(\mathbf{x}, \theta)
+\end{align*} Otherwise it is not absolutely  continuously w.r.t. the counting or Lebesgue measure.
+\item Before the experiment is performed, the information or belief about the true value of the parameter is described by the \tb{prior distribution}. After the value $\mathbf{x}$ has been obtained for $\mathbf{X}$, the information about $\theta$ is described by the \tb{posterior distribution}.
+ \end{itemize}
+ \begin{rema}\bfs{notations}
+ Because we now think of $p(\mathbf{x}, \theta)$ as a conditional density or frequency function given $\boldsymbol{\theta}=$ $\theta$, we will denote it by $p(\mathbf{x} \mid \theta)$ for the remainder of this section.
+ \end{rema}
+\subsubsection{ Bayes' Theorem}\label{sec:bay_thm}
+ The posterior distribution is discrete or continuous according as the prior distribution is discrete or continuous.
+ If we denote the corresponding (posterior) frequency function or density by $\pi(\theta \mid \mathbf{x})$, then 
+ \begin{align*}
+\begin{aligned}
+\pi(\theta \mid \mathbf{x}) &=\frac{\pi(\theta) p(\mathbf{x} \mid \theta)}{\sum_{t} \pi(t) p(\mathbf{x} \mid t)} \quad \text { if } \boldsymbol{\theta} \text { is discrete } \\
+&=\frac{\pi(\theta) p(\mathbf{x} \mid \theta)}{\int_{-\infty}^{\infty} \pi(t) p(\mathbf{x} \mid t) d t} \quad \text { if } \boldsymbol{\theta} \text { is continuous. }
+\end{aligned}
+\end{align*}
+
+\begin{exma}\bfs{Bernoulli Trials}\label{ex:ber_trial0}
+Suppose that $X_{1}, \ldots, X_{n}$ are indicators of $n$ Bernoulli trials with probability of success $\theta$ where $0<\theta<1$. If we assume that $\boldsymbol{\theta}$ has a priori distribution with density $\pi$, we obtain by (1.2.8) as posterior density of $\boldsymbol{\theta}$,
+\begin{align*}
+\pi\left(\theta \mid x_{1}, \ldots, x_{n}\right)=\frac{\pi(\theta) \theta^{k}(1-\theta)^{n-k}}{\int_{0}^{1} \pi(t) t^{k}(1-t)^{n-k} d t}
+\end{align*}
+for $0<\theta<1, x_{i}=0$ or $1, i=1, \ldots, n, k=\sum_{i=1}^{n} x_{i}$.
+\end{exma} 
+\begin{rema}\bfs{Bayes sufficient statistics}
+Note that the posterior density depends on the data only through the total number of successes, $\sum_{i=1}^{n} X_{i}$. We also obtain the same posterior density if $\boldsymbol{\theta}$ has prior density $\pi$ and we only observe $\sum_{i=1}^{n} X_{i}$, which has a $\mathcal{B}(n, \theta)$ distribution given $\boldsymbol{\theta}=\theta$. We can thus write $\pi(\theta \mid k)$ for $\pi\left(\theta \mid x_{1}, \ldots, x_{n}\right)$, where $k=\sum_{i=1}^{n} x_{i}$. See also \cref{sec:Bayes_suff}
+\end{rema}
+\begin{rema}\bfs{conjugate prior}\label{re:conju_beta}
+To choose a prior $\pi$, we need a class of distributions that concentrate on the interval $(0,1)$. One such class is the \tb{two-parameter beta family}. This class of distributions has the remarkable property that the resulting posterior distributions are again beta distributions. Specifically, upon substituting the $\beta(r, s)$ density we obtain
+\begin{align*}
+\pi(\theta \mid k)=\frac{\theta^{r-1}(1-\theta)^{s-1} \theta^{k}(1-\theta)^{n-k}}{c}=\frac{\theta^{k+r-1}(1-\theta)^{n-k+s-1}}{c}
+\end{align*}
+The proportionality constant $c$, which depends on $k, r$, and $s$ only, must  be $B(k+r, n-k+s)$ where $B(\cdot, \cdot)$ is the beta function, and the posterior distribution of $\boldsymbol{\theta}$ given $\sum X_{i}=k$ is $\beta(k+r, n-k+s)$.
+\end{rema}
+\subsection{The Decision Theoretic Framework}
+\subsubsection{Components of the Decision Theory Framework}
+\paragraph{Action Space}
+\paragraph{Loss function}
+\paragraph{Decision Procedures}
+\paragraph{The Risk Function}
+\paragraph{Confidence Bounds and Intervals}
+\subsubsection{Comparison of Decision Procedures}
+\subsubsection{Bayes and Minimax Criteria}
+\paragraph{Bayes}
+\paragraph{Minimax}
+\paragraph{Randomized Decision Rules}
+
+\subsection{Prediction}
+Remark 1.4.4. Suppose the model for $\mu(\mathbf{Z})$ is linear; that is,
+\begin{align*}
+\mu(\mathbf{Z})=E(Y \mid \mathbf{Z})=\alpha+\mathbf{Z}^{T} \boldsymbol{\beta}
+\end{align*}
+for unknown $\alpha \in R$ and $\boldsymbol{\beta} \in R^{d}$. We want to express $\alpha$ and $\boldsymbol{\beta}$ in terms of moments of $(\mathbf{Z}, Y)$. Set $Z_{0}=1$. By Proposition 1.4.1(a), $\epsilon=Y-\mu(\mathbf{Z})$ and each of $Z_{0}, \ldots, Z_{d}$ are uncorrelated; thus,
+\begin{align*}
+E\left(Z_{j}\left[Y-\left(\alpha+\mathbf{Z}^{T} \boldsymbol{\beta}\right)\right]\right)=0, j=0, \ldots, d
+\end{align*}
+Solving (1.4.15) for $\alpha$ and $\boldsymbol{\beta}$ gives (1.4.14) (Problem 1.4.23). Because the multivariate normal model is a linear model, this gives a new derivation of (1.4.12).
+
+Remark 1.4.5. Consider the Bayesian model of Section $1.2$ and the Bayes risk (1.3.8) defined by $r(\delta)=E[l(\boldsymbol{\theta}, \delta(\mathbf{X}))]$. If we identify $\boldsymbol{\theta}$ with $Y$ and $\mathbf{X}$ with $\mathbf{Z}$, we see that $r(\delta)=$ MSPE for squared error loss $l(\theta, \delta)=(\theta-\delta)^{2}$. Thus, the optimal MSPE predictor $E(\boldsymbol{\theta} \mid \mathbf{X})$ is the Bayes procedure for squared error loss. We return to this in Section $3.2$.
+
+Remark 1.4.6. When the class $\mathcal{G}$ of possible predictors $g$ with $E|g(\mathbf{Z})|<\infty$ form a Hilbert space as defined in Section B.10 and there is a $g_{0} \in \mathcal{G}$ such that
+\begin{align*}
+g_{0}=\arg \inf \{\Delta(Y, g(\mathbf{Z})): g \in \mathcal{G}\},
+\end{align*}
+then $g_{0}(\mathbf{Z})$ is called the projection of $Y$ on the space $\mathcal{G}$ of functions of $\mathbf{Z}$ and we write $g_{0}(\mathbf{Z})=\pi(Y \mid \mathcal{G})$. Moreover, $g(\mathbf{Z})$ and $h(\mathbf{Z})$ are said to be orthogonal if at least one has expected value zero and $E[g(\mathbf{Z}) h(\mathbf{Z})]=0$. With these concepts the results of this section are linked to the general Hilbert space results of Section B.10. Using the distance $\Delta$ and projection $\pi$ notation, we can conclude that
+\begin{align*}
+\begin{gathered}
+\mu(\mathbf{Z})=\pi\left(Y \mid \mathcal{G}_{N P}\right), \mu_{L}(\mathbf{Z})=\pi\left(Y \mid \mathcal{G}_{L}\right)=\pi\left(\mu(\mathbf{Z}) \mid \mathcal{G}_{L}\right) \\
+\Delta^{2}\left(Y, \mu_{L}(\mathbf{Z})\right)=\Delta^{2}\left(\mu_{L}(\mathbf{Z}), \mu(\mathbf{Z})\right)+\Delta^{2}(Y, \mu(\mathbf{Z})) \\
+Y-\mu(\mathbf{Z}) \text { is orthogonal to } \mu(\mathbf{Z}) \text { and to } \mu_{L}(\mathbf{Z})
+\end{gathered}
+\end{align*}
+Note that (1.4.16) is the Pythagorean identity.
+Summary. We consider situations in which the goal is to predict the (perhaps in the future) value of a random variable $Y$. The notion of mean squared prediction error (MSPE) is introduced, and it is shown that if we want to predict $Y$ on the basis of information contained in a random vector $\mathbf{Z}$, the optimal MSPE predictor is the conditional expected value of $Y$ given Z. The optimal MSPE predictor in the multivariate normal distribution is presented. It is shown to coincide with the optimal MSPE predictor when the model is left general but the class of possible predictors is restricted to be linear.
+1.5 SUFFICIENCY
+
+\subsection{Sufficiency}
+\subsubsection{Definitions, Concepts and Factorization Theorem}
+Once we have postulated a statistical model, we would clearly like to separate out any aspects of the data that are irrelevant in the context of the model and that may obscure our understanding of the situation.
+
+$\bullet$ \tb{Reduction of Data: $T$ is not 1-1 map}
+
+Recall that a statistic is any function of the observations generically denoted by $T(\mathbf{X})$ or $T$. The range of $T$ is any space of objects $\mathcal{T}$. If $T$ is \tb{not a 1-1 mapping}, and we only record the value of $T(\mathbf{X})$, we loss some information from the original observation $\mathbf{X}$.
+
+\begin{exma}
+\begin{enumerate} We give two statistics here for illustration:
+    \item $T(\mathbf{X})=\bar{X}$ loses information about the $X_{i}$ as soon as $n>1$.
+    \item  Even the sorting $T\left(X_{1}, \ldots, X_{n}\right)=\left(X_{(1)}, \ldots, X_{(n)}\right)$, loses information about the labels of the $X_{i}$.
+\end{enumerate}
+\end{exma}
+
+$\bullet$ \tb{Sufficiency}
+
+The idea of sufficiency is to reduce the data with statistics whose use involves \tb{no loss of information in the context of a model} $\mathcal{P}=\left\{P_{\theta}: \theta \in \Theta\right\}$.
+
+\begin{defa}\bfs{Sufficiency}
+ A statistic $T(\mathbf{X})$ is called \tb{sufficient} for $P \in \mathcal{P}$ or the parameter $\theta$ if the conditional distribution of $\mathbf{X}$ given $T(\mathbf{X})=t$ does not involve $\theta$. 
+\end{defa}
+\begin{rema}\bfs{explanation}
+It indicates that once the value of a sufficient statistic $T$ is known, the sample $\mathbf{X}=\left(X_{1}, \ldots, X_{n}\right)$ does not contain any further information about $\theta$ ( or equivalently $P$, given that $\mathcal{P}=\{P_{\theta}\}$ the parameterization is valid and identifiable). 
+ 
+$\diamond$ \tb{Measure Theoretic explanation:}
+
+The statistic $T$ is called sufficient for the given set $\mathfrak{M}$ of probability measures if (somewhat loosely speaking) the conditional probability of a subset $E$ of $X$ given a value $y$ of $T$ is the same for every probability measure in $\mathfrak{M}$.
+\end{rema}
+\begin{rema}
+Sometime we write ``not involve parameter $\theta$'' as ``independent of parameter $\theta$''. Please note here it is not in the context of probability independence.
+\end{rema}
+
+\begin{exma}\bfs{Bernoulli Trials}\label{ex:ber_trial1}
+Let $\mathbf{X}=\left(X_{1}, \ldots, X_{n}\right)$, where the $X_{i}$ are the indicators of a set of $n$ Bernoulli trials with success probability $p .$ Let $T=\sum_{i=1}^{n} X_{i}$, the total number of successes.  We have
+\begin{align*}
+P\left[X_{1}=x_{1}, \ldots, X_{n}=x_{n}\right]=\theta^{t}(1-\theta)^{n-t}
+\end{align*}
+where $x_{i}$ is 0 or 1 and $t=\sum_{i=1}^{n} x_{i}$. 
+
+We know $T$ has a binomial, $\mathcal{B}(n, p)$, distribution and the conditional distribution
+\begin{align*}
+p(\mathbf{x} \mid t)=\frac{P[\mathbf{X}=\mathbf{x}, T=t]}{\left(\begin{array}{c}
+n \\
+t
+\end{array}\right) p^{t}(1-p)^{n-t}}=\frac{p^{t}(1-p)^{n-t}}{\left(\begin{array}{c}
+n \\
+t
+\end{array}\right) p^{t}(1-p)^{n-t}}=\frac{1}{\left(\begin{array}{c}
+n \\
+t
+\end{array}\right)},
+\end{align*}
+which does not involve $\theta$. Thus, $T$ is a sufficient statistic for $\theta$.
+\end{exma}
+\begin{exma}
+Suppose that arrival of customers at a service counter follows a Poisson process with arrival rate (parameter) $\theta$. Let $X_{1}$ be the time of arrival of the first customer, $X_{2}$ the time between the arrival of the first and second customers. By \cite[A.16.4]{Rice}, $X_{1}$ and $X_{2}$ are independent and identically distributed exponential random variables with parameter $\theta$. We prove that $T=X_{1}+X_{2}$ is sufficient for $\theta$. 
+\begin{proof}
+Begin by noting that according to \cite[Theorem B.2.3]{Rice} , whatever be $\theta, X_{1} /\left(X_{1}+X_{2}\right)$ and $X_{1}+X_{2}$ are independent and the first of these statistics has a uniform distribution on $(0,1)$. Therefore, the conditional distribution of $X_{1} /\left(X_{1}+X_{2}\right)$ given $X_{1}+X_{2}=t$ is $\mathcal{U}(0,1)$ whatever be $t$. So given $X_{1}+X_{2}=t, X_{1}$ has a $\mathcal{U}(0, t)$ distribution. It follows that, when $X_{1}+X_{2}=t$, whatever be $\theta,\left(X_{1}, X_{2}\right)$ is conditionally distributed as $(X, Y)$ where $X$ is uniform on $(0, t)$ and $Y=t-X$.  $X_{1}+X_{2}$ is sufficient since  $\theta$ is not involved in the conditional distribution.
+\end{proof}
+\end{exma}
+
+\begin{defa}\bfs{Equivalent Sufficient Statistics: Non-uniqueness}
+ If $T_{1}$ and $T_{2}$ are any two sufficient statistics such that $T_{1}(\mathbf{x})=T_{1}(\mathbf{y})$ if and only if $T_{2}(\mathbf{x})=T_{2}(\mathbf{y})$, then $T_{1}$ and $T_{2}$ provide the same information and achieve the same reduction of the data. Such statistics are called equivalent.
+\end{defa}
+
+
+In general, checking sufficiency directly is difficult because we need to compute the conditional distribution. Fortunately, a simple necessary and sufficient criterion for a statistic to be sufficient is available. 
+
+\begin{thma}\bfs{Sufficient Statistics Factorization Theorem}\label{thm:frac}
+In a regular model, a statistic $T(\mathbf{X})$ with range $\mathcal{T}$ is sufficient for $\theta$ if and only if, there exists a function $g(t, \theta)$ defined for $t$ in $\mathcal{T}$ and $\theta$ in $\Theta$ and a function h defined on $\mathcal{X}$ such that
+\begin{align}
+p(\mathbf{x}, \theta)=g(T(\mathbf{x}), \theta) h(\mathbf{x}) \label{eq:nmdfae}
+\end{align}
+for all $\mathbf{x} \in \mathcal{X}, \theta \in \Theta$.
+\end{thma}
+\begin{rema}\bfs{explanation}
+\begin{itemize}
+    \item $T$ is sufficient if and only if the densities can be written as products of two factors, the first of which depends on the outcome through $T$ only and the second of which is independent of the unknown measure. 
+    \item Another way of phrasing this result is to say that $T$ is sufficient if and only if the \tb{likelihood ratio} (see also \cref{eq:likeratio}) of every pair of measures in $\mathfrak{M}$ depends on the outcome through $T$ only. (The latter formulation makes sense even in the not necessarily dominated case but unfortunately it is not true in that case. The situation can be patched up somewhat by introducing a weaker notion called pairwise sufficiency.)
+\end{itemize}
+\end{rema}
+\begin{proof}
+We shall give the proof in the discrete case.
+
+``$\Leftarrow$'':
+ let $\left(\mathbf{x}_{1}, \mathbf{x}_{2}, \ldots\right)$ be the set of possible realizations of $\mathbf{X}$ and let $t_{i}=T\left(\mathbf{x}_{i}\right)$. Then $T$ is discrete and $\sum_{i=1}^{\infty} P_{\theta}\left[T=t_{i}\right]=1$ for every $\theta$. To prove the sufficiency of \cref{eq:nmdfae}, we need only show that $P_{\theta}\left[\mathbf{X}=\mathbf{x}_{j} \mid T=t_{i}\right]$ is independent of $\theta$ for every $i$ and $j$. By our definition of conditional probability in the discrete case, it is enough to show that $P_{\theta}\left[\mathbf{X}=\mathbf{x}_{j} \mid T=t_{i}\right]$ is independent of $\theta$ on each of the sets $S_{i}=\left\{\theta: P_{\theta}\left[T=t_{i}\right]>0\right\}$, $i=1,2, \ldots$. Now, if \cref{eq:nmdfae} holds,
+\begin{align*}
+P_{\theta}\left[T=t_{i}\right]=\sum_{\left\{\mathbf{x}: T(\mathbf{x})=t_{i}\right\}} p(\mathbf{x}, \theta)=g\left(t_{i}, \theta\right) \sum_{\left\{\mathbf{x}: T(\mathbf{x})=t_{i}\right\}} h(\mathbf{x}) .
+\end{align*}
+For $\theta \in S_{i}$,
+\begin{align*}
+\begin{aligned}
+P_{\theta}\left[\mathbf{X}=\mathbf{x}_{j} \mid T=t_{i}\right] &=P_{\theta}\left[\mathbf{X}=\mathbf{x}_{j}, T=t_{i}\right] / P_{\theta}\left[T=t_{i}\right] \\
+&=\frac{p\left(\mathbf{x}_{j}, \theta\right)}{P_{\theta}\left[T=t_{i}\right]} \\
+&=\frac{g\left(t_{i}, \theta\right) h\left(\mathbf{x}_{j}\right)}{P_{\theta}\left[T=t_{i}\right]} \text { if } T\left(\mathbf{x}_{j}\right)=t_{i} \\
+&=0 \text { if } T\left(\mathbf{x}_{j}\right) \neq t_{i}
+\end{aligned}
+\end{align*}
+We then have 
+\begin{align}
+P_{\theta}\left[\mathbf{X}=\mathbf{x}_{j} \mid T=t_{i}\right] &=0 \text { if } T\left(\mathbf{x}_{j}\right) \neq t_{i} \\
+&=\frac{h\left(\mathbf{x}_{j}\right)}{\sum_{\left\{\mathbf{x}_{k}: T\left(\mathbf{x}_{k}\right)=t_{i}\right\}} h\left(\mathbf{x}_{k}\right)} \text { if } T\left(\mathbf{x}_{j}\right)=t_{i} \label{eq:conditional_suff}
+\end{align}
+Therefore, $T$ is sufficient. 
+
+``$\Rightarrow$'': if $T$ is sufficient, let
+\begin{align*}
+g\left(t_{i}, \theta\right)=P_{\theta}\left[T=t_{i}\right], h(\mathbf{x})=P_{\theta}\left[\mathbf{X}=\mathbf{x} \mid T(\mathbf{X})=t_{i}\right]
+\end{align*}
+Then
+\begin{align*}
+p(\mathbf{x}, \theta)=P_{\theta}[\mathbf{X}=\mathbf{x}, T=T(\mathbf{x})]=g(T(\mathbf{x}), \theta) h(\mathbf{x})
+\end{align*}
+\end{proof}
+\begin{exma}\bfs{Interarrival Times of Poisson Process}
+If $X_{1}, \ldots, X_{n}$ are the interarrival times for $n$ customers, then the joint density of $\left(X_{1}, \ldots, X_{n}\right)$ is given by (see \cite[A.16.4]{Rice}),
+\begin{align*}
+p\left(x_{1}, \ldots, x_{n}, \theta\right)=\theta^{n} \exp \left[-\theta \sum_{i=1}^{n} x_{i}\right]
+\end{align*}
+if all the $x_{i}$ are $>0$, and $p\left(x_{1}, \ldots, x_{n}, \theta\right)=0$ otherwise. From \cref{thm:frac}, we conclude that 
+\begin{enumerate}
+    \item $T\left(X_{1}, \ldots, X_{n}\right)=\sum_{i=1}^{n} X_{i}$ is \tb{sufficient}. 
+    \item $g(t, \theta)=\theta^{n} e^{-\theta t}$ if $t>0$, $\theta>0$, and $h\left(x_{1}, \ldots, x_{n}\right)=1$ if all the $x_{i}$ are $>0$, and both functions $=0$ otherwise. 
+\end{enumerate}
+\end{exma}
+
+\begin{exma}\bfs{Estimating the Size of a Population.}
+ Consider a population with $\theta$ members labeled consecutively from 1 to $\theta$. The population is sampled with replacement and $n$ members of the population are observed and their labels $X_{1}, \ldots, X_{n}$ are recorded. 
+ The probability distribution of $\mathbf{X}$ is given by
+\begin{align*}
+p\left(x_{1}, \ldots, x_{n}, \theta\right)=\theta^{-n}  = \theta^{-n} \indicate{x_{(n)} \leq \theta}
+\end{align*}
+if every $x_{i}$ is an integer between 1 and $\theta$ and $p\left(x_{1}, \ldots, x_{n}, \theta\right)=0$ otherwise.   From \cref{thm:frac}, we conclude that 
+\begin{enumerate}
+     \item $X_{(n)}=\max \left(X_{1}, \ldots X_{n}\right)$ is sufficient. 
+ \end{enumerate} 
+\end{exma}
+
+\begin{exma}\bfs{\gls{iid} Gaussian}\label{ex:iid_gaussian_0}
+ Let $X_{1}, \ldots, X_{n}$ be independent and identically distributed random variables each having a normal distribution with mean $\mu$ and variance $\sigma^{2}$, both of which are
+unknown. Let $\theta=\left(\mu, \sigma^{2}\right)$. Then the density of $\left(X_{1}, \ldots, X_{n}\right)$ is given by
+\begin{align}
+p\left(x_{1}, \ldots, x_{n}, \theta\right) &=\left[2 \pi \sigma^{2}\right]^{-n / 2} \exp \left\{-\frac{1}{2 \sigma^{2}} \sum_{i=1}^{n}\left(x_{i}-\mu\right)^{2}\right\} \nn
+&=\left[2 \pi \sigma^{2}\right]^{-n / 2}\left[\exp \left\{-\frac{n \mu^{2}}{2 \sigma^{2}}\right\}\right]\left[\exp \left\{-\frac{1}{2 \sigma^{2}}\left(\sum_{i=1}^{n} x_{i}^{2}-2 \mu \sum_{i=1}^{n} x_{i}\right)\right\}\right]\label{eq:iid_gaussian}
+\end{align}
+Evidently $p\left(x_{1}, \ldots, x_{n}, \theta\right)$ is itself a function of $\left(\sum_{i=1}^{n} x_{i}, \sum_{i=1}^{n} x_{i}^{2}\right)$ and $\theta$ only.  From \cref{thm:frac},  we can conclude that
+\begin{align*}
+T\left(X_{1}, \ldots, X_{n}\right)=\left(\sum_{i=1}^{n} X_{i}, \sum_{i=1}^{n} X_{i}^{2}\right)
+\end{align*}
+is sufficient for $\theta$. 
+\end{exma}
+\begin{rema} We give two equivalent sufficient statistic:
+\begin{enumerate}
+    \item An  equivalent sufficient statistic in this situation that is frequently used is sample mean and the sample variance:
+\begin{align*}
+S\left(X_{1}, \ldots, X_{n}\right)=\left[(1 / n) \sum_{i=1}^{n} X_{i},[1 /(n-1)] \sum_{i=1}^{n}\left(X_{i}-\bar{X}\right)^{2}\right]
+\end{align*}
+where $\bar{X}=(1 / n) \sum_{i=1}^{n} X_{i}$.
+\item Another not that obvious one is the likelihood function $L_{\mathbf{x}}(\theta)=p(\mathbf{x}, \theta), \theta \in \Theta .$ Note here the statistic's range $\mathcal{T}$ is a function space (functions of $\theta$).
+\end{enumerate}
+
+\end{rema}
+
+\begin{exma}\bfs{$2$-dim Regression}\label{ex:2d_regress}
+ Suppose, as in the regression model \cref{sssec:regress} with $d=2$, that $Y_{1}, \ldots, Y_{n}$ are independent, $Y_{i} \sim \mathcal{N}\left(\mu_{i}, \sigma^{2}\right)$, with $\mu_{i}$ following the linear regression model
+\begin{align*}
+\mu_{i}=\beta_{1}+\beta_{2} z_{i}, i=1, \ldots, n,
+\end{align*}
+where we assume that the given constants $\left\{z_{i}\right\}$ are not all identical. Then $\boldsymbol{\theta}=\left(\beta_{1}, \beta_{2}, \sigma^{2}\right)^{T}$ is identifiable and
+\begin{align*}
+p(\mathbf{y}, \boldsymbol{\theta})=\left(2 \pi \sigma^{2}\right)^{-\frac{n}{2}} \exp \left\{\frac{-\sum\left(\beta_{1}+\beta_{2} z_{i}\right)^{2}}{2 \sigma^{2}}\right\} \exp \left\{\frac{-\sum Y_{i}^{2}+2 \beta_{1} \sum Y_{i}+2 \beta_{2} \sum z_{i} Y_{i}}{2 \sigma^{2}}\right\} .
+\end{align*}
+Thus, $\mathbf{T}=\left(\sum Y_{i}, \sum Y_{i}^{2}, \sum z_{i} Y_{i}\right)$ is sufficient for $\boldsymbol{\theta}$.
+\end{exma}
+\subsubsection{Sufficiency and Decision Theory}
+Sufficiency can be given a clear operational interpretation in the decision theoretic setting. 
+\begin{lema}
+If $T(\mathbf{X})$ is sufficient, we can, for any decision procedure $\delta(\mathbf{x})$, find a \tb{randomized decision rule} $\delta^{*}(T(\mathbf{X}))$ depending only on $T(\mathbf{X})$ that does as well as $\delta(\mathbf{X})$ in the sense of having the same risk function; that is,
+\begin{align*}
+R(\theta, \delta)=R\left(\theta, \delta^{*}\right) \text { for all } \theta \text {. }
+\end{align*}
+\end{lema}
+\begin{rema}\bfs{explanation}
+By randomized we mean that $\delta^{*}(T(\mathbf{X}))$ can be generated from the value $t$ of $T(\mathbf{X})$ and a random mechanism not depending on $\theta$.
+\end{rema}
+\begin{proof}
+Given $T(\mathbf{X})=t$, the distribution of $\delta(\mathbf{X})$ does not depend on $\theta$. Now draw $\delta^{*}$ randomly from this conditional distribution. This $\delta^{*}(T(\mathbf{X}))$ will have the same risk as $\delta(\mathbf{X})$ because, by the double expectation theorem,
+\begin{align*}
+R\left(\theta, \delta^{*}\right)=E\left\{E\left[\ell\left(\theta, \delta^{*}(T)\right) \mid T\right]\right\}=E\{E[\ell(\theta, \delta(\mathbf{X})) \mid T]\}=R(\theta, \delta) .
+\end{align*}
+\end{proof}
+
+\begin{exma}
+  Suppose $X_{1}, \ldots, X_{n}$ are independent identically $\mathcal{N}(\theta, 1)$ distributed. Then
+\begin{align*}
+p(\mathbf{x}, \theta)=\exp \left\{n \theta\left(\bar{x}-\frac{1}{2} \theta\right)\right\}(2 \pi)^{-\frac{1}{2} n} \exp \left\{-\frac{1}{2} \sum x_{i}^{2}\right\}
+\end{align*}
+By the factorization theorem, $\bar{X}$ is sufficient. Let $\delta(\mathbf{X})=X_{1}$. Using only $\bar{X}$, we construct a rule $\delta^{*}(\mathbf{X})$ with the same risk $=$ mean squared error as $\delta(\mathbf{X})$ as follows: Conditionally, given $\bar{X}=t$, choose $T^{*}=\delta^{*}(\mathbf{X})$ from the normal $\mathcal{N}\left(t, \frac{n-1}{n}\right)$ distribution. 
+This is because from \cref{eq:conditional_suff} we know given $\bar{X}=t$, $\delta(\mathbf{X})$ (i.e. $X_1$) has this (marginal) distribution. 
+We then have
+\begin{align*}
+\begin{gathered}
+E\left(T^{*}\right)=E\left[E\left(T^{*} \mid \bar{X}\right)\right]=E(\bar{X})=\theta=E\left(X_{1}\right) \\
+\operatorname{Var}\left(T^{*}\right)=E\left[\operatorname{Var}\left(T^{*} \mid \bar{X}\right)\right]+\operatorname{Var}\left[E\left(T^{*} \mid \bar{X}\right)\right]=\frac{n-1}{n}+\frac{1}{n}=1=\operatorname{Var}\left(X_{1}\right)
+\end{gathered}
+\end{align*}
+Thus, $\delta^{*}(\mathbf{X})$ and $\delta(\mathbf{X})$ have the same mean squared error.
+\end{exma}
+
+\subsubsection{Sufficiency and Bayes Models}\label{sec:Bayes_suff}
+There is a natural notion of sufficiency of a statistic $T$ in the Bayesian context where in addition to the model $\mathcal{P}=\left\{P_{\theta}: \theta \in \Theta\right\}$ we postulate a prior distribution $\Pi$ for $\Theta$.
+
+In \cref{ex:ber_trial0} (Bernoulli trials) we saw that the posterior distribution given $\mathbf{X}=\mathbf{x}$ is the same as the posterior distribution given $T(\mathbf{X})=\sum_{i=1}^{n} X_{i}=k$, where $k=\sum_{i=1}^{n} X_{i}$. In this situation we call $T$ \tb{Bayes sufficient}.
+
+
+\begin{defa}\bfs{Bayes Sufficient}
+ $T(\mathbf{X})$ is \tb{Bayes sufficient} for $\Pi$ if the posterior distribution of $\theta$ given $\mathbf{X}=\mathbf{x}$ is the same as the posterior (conditional) distribution of $\theta$ given $T(\mathbf{X})=T(\mathbf{x})$ for all $\mathbf{x}$. Equivalently, $\theta$ and $\mathbf{X}$ are \tb{conditionally independent} given $T(\mathbf{X})$.
+\end{defa}
+
+\begin{thma}\bfs{Kolmogorov}
+ If $T(\mathbf{X})$ is sufficient for $\theta$, it is Bayes sufficient for every prior distribution $\Pi$ .
+\end{thma}
+\begin{proof}
+Apply the factorization theorem \cref{thm:frac}.
+\end{proof}
+
+\subsubsection{Minimal Sufficiency}
+For any model there are many sufficient statistics: Thus, if $X_{1}, \ldots, X_{n}$ is a $\mathcal{N}\left(\mu, \sigma^{2}\right)$ sample $n \geq 2$, then $T(\mathbf{X})=\left(\sum_{i=1}^{n} X_{i}, \sum_{i=1}^{n} X_{i}^{2}\right)$ and $S(\mathbf{X})=\left(X_{1}, \ldots, X_{n}\right)$ are both sufficient. But $T(\mathbf{X})$ provides a greater reduction of the data. 
+\begin{defa}\bfs{Minimally Sufficient}
+Statistic $T(\mathbf{X})$ is \tb{minimally sufficient} if it is sufficient and provides a greater reduction of the data
+than any other sufficient statistic $S(\mathbf{X})$, i.e. we can find a \tb{transformation $r$ such that $T(\mathbf{X})=r(S(\mathbf{X}))$}.
+\end{defa}
+
+
+\begin{exma}\bfs{Bernoulli Trials} \label{ex:ber_trial2}
+  In the Bernoulli trials case, $T=\sum_{i=1}^{n} X_{i}$ was shown to be sufficient. Let $S(\mathbf{X})$ be any other sufficient statistic. Then by the factorization theorem we can write $p(\mathbf{x}, \theta)$ as
+\begin{align*}
+p(\mathbf{x}, \theta)=g(S(\mathbf{x}), \theta) h(\mathbf{x})
+\end{align*}
+We have 
+\begin{align*}
+\theta^{T}(1-\theta)^{n-T}=g(S(\mathbf{x}), \theta) h(\mathbf{x}) \text { for all } \theta \text {. }
+\end{align*}
+For any two fixed $\theta_{1}$ and $\theta_{2}$, the ratio of both sides of the foregoing gives
+\begin{align*}
+\left(\theta_{1} / \theta_{2}\right)^{T}\left[\left(1-\theta_{1}\right) /\left(1-\theta_{2}\right)\right]^{n-T}=g\left(S(\mathbf{x}), \theta_{1}\right) / g\left(S(\mathbf{x}), \theta_{2}\right) .
+\end{align*}
+In particular, if we set $\theta_{1}=2 / 3$ and $\theta_{2}=1 / 3$, take the $\log$ of both sides of this equation and solve for $T$, we find
+\begin{align*}
+T=r(S(\mathbf{x}))=\left\{\log \left[2^{n} g(S(\mathbf{x}), 2 / 3) / g(S(\mathbf{x}), 1 / 3)\right]\right\} / 2 \log 2 .
+\end{align*}
+Thus, $T$ is \tb{minimally sufficient}.
+\end{exma} 
+\subsubsection{The Likelihood Function}
+The preceding example shows how we can use $p(\mathbf{x}, \theta)$ for different values of $\theta$ and the factorization theorem to establish that a sufficient statistic is minimally sufficient. 
+\begin{defa}\bfs{Likelihood Function}
+We define the \tb{likelihood function} $L$ for a given observed data vector $\mathbf{x}$ as
+\begin{align*}
+L_{\mathbf{x}}(\theta)=p(\mathbf{x}, \theta), \theta \in \Theta .
+\end{align*}
+\end{defa}
+\begin{rema}\bfs{explanation}We have two viewpoints for likelihood function:
+\begin{itemize}
+    \item  $L_{\mathbf{x}}$ is a map from $\Theta$ to the function class $\mathcal{T}=\{p(\cdot, \theta)\}$ (i.e. functions of $\bx$)
+    
+    In the discrete case, for a given $\theta, L_{\mathbf{x}}(\theta)$ gives the probability of observing the point $\mathbf{x}$. In the continuous case it is approximately proportional to the probability of observing a point in a small rectangle around $\mathbf{x}$. 
+    
+    $\{\theta \rightarrow p(\mathbf{x}, \theta)$ : $\mathbf{x} \in \mathcal{X}\} .$ 
+
+    \item \tb{Default:} $L_{\mathbf{x}}(\theta)$ is a map from $\calX$ to the function class $\mathcal{T}'=\{p(\mathbf{x}, \cdot)\}$ (i.e. functions of $\theta$):
+    
+    It gives, for a given observed $\mathbf{x}$, the "likelihood" or "plausibility" of various $\theta$. In \cref{sec:bay_thm} the posterior distribution can then be remembered as  Posterior $\propto$ (Prior) $\times$ (Likelihood) where the sign $\propto$ denotes proportionality as functions of $\theta$.
+\end{itemize}
+\end{rema}
+
+\begin{exma}\bfs{\gls{iid} Gaussian}
+  In \cref{ex:iid_gaussian_0} $\mathcal{N}\left(\mu, \sigma^{2}\right)$ example, the likelihood function \cref{eq:iid_gaussian} is determined by the two-dimensional \tb{sufficient statistic}
+\begin{align*}
+T=\left(T_{1}, T_{2}\right)=\left(\sum_{i=1}^{n} X_{i}, \sum_{i=1}^{n} X_{i}^{2}\right) .
+\end{align*}
+$\operatorname{Set} \theta=\left(\theta_{1}, \theta_{2}\right)=\left(\mu, \sigma^{2}\right)$, then
+\begin{align*}
+L_{\mathbf{x}}(\theta)=\left(2 \pi \theta_{2}\right)^{-n / 2} \exp \left\{-\frac{n \theta_{1}^{2}}{2 \theta_{2}}\right\} \exp \left\{-\frac{1}{2 \theta_{2}}\left(t_{2}-2 \theta_{1} t_{1}\right)\right\} .
+\end{align*}
+Now, as a function of $\theta, L_{\mathbf{x}}(\cdot)$ determines $\left(t_{1}, t_{2}\right)$ because, for example,
+\begin{align*}
+t_{2}=-2 \log L_{\mathbf{x}}((0,1))-n \log 2 \pi
+\end{align*}
+with a similar expression for $t_{1}$ in terms of $L_{\mathbf{x}}((0,1))$ and $L_{\mathbf{x}}((1,1))$. Thus, $L$ is a statistic that is \tb{equivalent} to $\left(t_{1}, t_{2}\right)$ and, hence, itself sufficient. 
+\end{exma} 
+\begin{rema}\bfs{minimal}
+Similar to the procedure in\cref{ex:ber_trial2}, we can show that $T$ and, hence, $L$ is \tb{minimal sufficient}. The general case is shown below.
+\end{rema}
+
+\begin{lema}\bfs{Likelihood (Ratio) Is Minimal}\label{eq:likeratio}
+Suppose there exists $\theta_{0}$ such that
+\begin{align*}
+\{\mathbf{x}: p(\mathbf{x}, \theta)>0\} \subset\left\{\mathbf{x}: p\left(\mathbf{x}, \theta_{0}\right)>0\right\}
+\end{align*}
+for all $\theta$. We define a \tb{function valued statistic} that at $\theta$ takes on the value $\frac{p(\mathbf{x}, \theta)}{p\left(\mathbf{x}, \theta_{0}\right)}$, the \tb{likelihood ratio} of $\theta$ to $\theta_{0}$:
+ $$\Lambda_{\mathbf{x}}=\frac{L_{\mathbf{x}}}{L_{\mathbf{x}}\left(\theta_{0}\right)}.$$
+Then $\Lambda_{\mathbf{x}}$ is \tb{minimal sufficient}.
+\end{lema}
+\begin{proof}
+``sufficient'': 
+$p(\bx,\theta) = \Lambda_x L_{x}(\theta_0)$, where $\Lambda_x$ is a function of $\theta$ and $\bx$, $ L_{x}(\theta_0)$ is a function of $\bx$. We therefore get sufficient from  \cref{thm:frac}, the factorization theorem.
+
+``minimal'':
+If any other $T(\mathbf{X})$ is sufficient for $\theta$, and if there is a value $\theta_{0} \in \Theta$ such that
+\begin{align*}
+\{\mathbf{x}: p(\mathbf{x}, \theta)>0\} \subset\left\{\mathbf{x}: p\left(\mathbf{x}, \theta_{0}\right)>0\right\}, \theta \in \Theta
+\end{align*}
+then, by the factorization theorem, the likelihood ratio
+$\Lambda_{\mathbf{X}}(\theta)=\frac{L_{\mathbf{X}}(\theta)}{L_{\mathbf{X}}\left(\theta_{0}\right)}=\frac{g(T(\bX),\theta)}{g(T(\bX,\theta_0))}$
+depends on $\mathbf{X}$ through $T(\mathbf{X})$ only. Therefore $\Lambda_{\mathbf{X}}(\theta)$ is a minimally sufficient statistic.
+\end{proof}
+
+
+\subsubsection{Ancillary Statistic: The "Irrelevant"' Part of the Data}
+We can always rewrite the original $\mathbf{X}$ as $(T(\mathbf{X}), S(\mathbf{X}))$ where $S(\mathbf{X})$ is \tb{a statistic needed to uniquely determine $\mathbf{x}$} once we know the sufficient statistic $T(\mathbf{x})$:
+$$``T(\bX) + S(\bX) \Rightarrow \bX"$$
+
+\begin{exma}
+  For instance, if $T(\mathbf{X})=\bar{X}$ we can take $S(\mathbf{X})=\left(X_{1}-\bar{X}, \ldots, X_{n}-\bar{X}\right)$, the residuals; or if $T(\mathbf{X})=$ $\left(X_{(1)}, \ldots, X_{(n)}\right)$, the order statistics, $S(\mathbf{X})=\left(R_{1}, \ldots, R_{n}\right)$, the ranks, where $R_{i}=$ $\sum_{j=1}^{n} 1\left(X_{j} \leq X_{i}\right)$.
+\end{exma}
+Intuitively, $ S(\mathbf{X})$ does not contains information about $\theta$. More generally, we definite the following statistic:
+\begin{defa}\bfs{Ancillary Statistic}
+An \tb{ancillary statistic} is a function of a sample whose distribution (or whose pmf or pdf) does not depend on the parameters $\theta$ of the model.
+\end{defa}
+\begin{rema}\bfs{ancillary vs. sufficient}
+\begin{itemize}
+    \item A sufficient statistic contains all the information worth knowing about if we want to estimate $\theta$; while the information contained in an ancillary statistic is completely irrelevant for the estimation of $\theta$.
+    \item If $T$ is sufficient, then $P\left(X_{1}=x_{1}, \ldots, X_{n}=x_{n} \mid T=t\right)$ does not involve $\theta$, so once the value of $T$ is known, additional information on the random sample does not support any inference whatsoever on $\theta$. On the other hand, if $T$ is ancillary, then the value of $T$ itself does not support any inference on $\theta$.
+\end{itemize}
+\end{rema}
+\begin{lema}
+If $T$ is a statistic that is independent of a sufficient statistic, then $T$ is ancillary.
+\end{lema}
+\begin{rema}
+For a converse, see {Basu's Theorem} in \cref{sec:basu}.
+\end{rema}
+\begin{proof}
+  This is directly from definition. Suppose that $Y$ is a sufficient statistic, and $T$ is another statistic that is \tb{independent} of $Y$ for all $\theta$. Then (in the discrete case, say)
+\begin{align*}
+P(T=t)=P(T=t \mid Y=y)
+\end{align*}
+\end{proof}
+\begin{exma}
+  A constant random variable $T=c$ is an ancillary statistic. A more interesting example is given by the sample variance $S^{2}$ for an $\mathcal{N}(\mu, 1)$ distribution. We know that $(n-1) S^{2} \sim \chi^{2}(n-1)$, and this distribution is independent of $\mu$, as required. In fact, we can also show directly that $S^{2}$ is ancillary, without knowing its distribution: it suffices to observe that
+\begin{align*}
+S^{2}=\frac{1}{n-1} \sum_{j=1}^{n}\left(X_{j}-\bar{X}\right)^{2}
+\end{align*}
+is invariant under simultaneous shifts $X_{j} \rightarrow X_{j}-a$. Moreover, the $X_{j}$ are a random sample drawn from an $N(\mu, 1)$ distribution precisely if the $X_{j}-\mu$ are \gls{iid} and standard normal. So it will not affect the distribution of $S^{2}$ if we pretend that the $X_{j}$ are $\mathcal{N}(0,1)$-distributed, and thus the distribution of $S^{2}$ is indeed independent of $\mu$.
+\end{exma}
+
+
+
+\subsection{Complete}
+\begin{defa}\bfs{Complete}
+Consider a random variable $X$ whose probability distribution belongs to a parametric model ${P}_{\theta}$ parametrized by $\theta$.
+The statistic $T$ is said to be \tb{complete} for the distribution of $X$ if for any (measurable) function $g$ and a constant scalar $a$:
+
+\centerline{``$\mathrm{E}_{\theta}(g(T))=a$ for all $\theta$'' $\Rightarrow$ ``${P}_{\theta}(g(T)=a)=1$ for all $\theta$''}
+\end{defa}
+\begin{rema}\bfs{boundedly complete}\label{re:bcomple}
+The statistic $T$ is said to be boundedly complete for the distribution of $X$ if this implication holds for every \tb{bounded}  measurable function $g$. This concept is used in \cref{sec:basu}
+\end{rema}
+\begin{rema}\bfs{meaning of completeness}\label{rem:complete_geo} We can assume $a=0$ since $g$ could be shifted possible additional constant translate $a$.
+Geometrically, completeness means something like this: if a vector $g(T)$ is orthogonal to the density $f_{\theta}$ of $T$ for each $\theta$:
+\begin{align*}
+E_{\theta} g(T)=\left\langle g(T), f_{\theta}\right\rangle=0
+\end{align*}
+then $g(T)=0$ i.e., the \tb{functions $f_{\theta}$ for varying $\theta$ span the whole space of functions of $T$}.
+
+To some extent, it would be more accurate to call the family of distributions $\{f_{\theta}\}$ complete (rather than the statistic $T$).
+\end{rema}
+
+\subsubsection{Partial Identifiability and Completeness}
+
+\begin{lema}\label{lem:gfda}
+Completeness ensures that the distributions corresponding to \tb{some} different values of the parameters are distinct.
+\end{lema}
+\begin{rema}\bfs{explanation}
+ Not necessarily all, but for any $\theta_0$, we could choose $\theta_1\ne\theta_0$ s.t. the density is different from that with $\theta_0$ (since they have different expectation as show below in the proof). 
+\end{rema}
+\begin{rema}\bfs{compare to identifiability}
+It is closely related to the idea of identifiability, but in statistical theory it is often found as a condition imposed on a sufficient statistic from which certain optimality results are derived.  It is better to understand it by looking at Lehmann-Scheff\'e Theorem, Bahadur's Theorem and Basu's Theorem where complete is involved.
+\end{rema}
+\begin{proof} We can assume $a=0$ since $g$ could be shifted possible additional constant translate $a$. We explain the definition carefully with equivalent statements: 
+
+$\diamond$ \tb{ completeness:}
+
+\centerline{``$\exists \theta$ s.t. $g(T(x))$ is not a.s. 0''$\Rightarrow$ ``$\exists \theta'$ s.t. $E_{\theta'} g(T)\ne 0$''.}
+
+In the case of complete, assume we can find a function $g(\cdot)$ where the expected value is $0$ (possible additional constant translate $a$) for some $\theta_{0}$.  It has a non-trivial distribution given that value of $\theta_{0}$. Then there must be another value of $\theta_{1} \neq \theta_{0}$ s.t.  $E_{\theta_1}g(T(x))\ne 0$. 
+
+\emph{In other words:
+A complete statistic will \tb{vary} the expected value of $g(T(x))$ if it is non-trivially distributed and centered at $0$ for some $\theta$.}
+
+$\diamond$ \tb{ not completeness:}
+
+\centerline{``$\exists \theta$ s.t. $g(T(x))$ is not a.s. 0''$\Rightarrow$ ``$\forall \theta, E_{\theta} g(T)= 0$''.}
+
+\emph{In other words, there are values of $\theta$ for which $g(T(x))$ has a non-trivial (variance $\ne 0$) distribution around it, but  $E_{\theta}g(T(x))$ is  \tb{always $0$} no matter how much $\theta$ changes.}
+
+$\diamond$ \tb{comparison:}
+
+\begin{itemize}
+    \item In the case of complete $T$, we can actually use statistic $g(T(x))$ for hypothesis testing and informative estimation in the context of an assumed distribution for our data. We want to be able to center it around a hypothesized value of $\theta$ and get it to have expectation 0 for that hypothesized value of $\theta$, but not for all other values of $\theta$.
+    \item  But if $T(x)$ is not complete we may not be able to do this: it is possible that we are\tb{unable} to reject any hypothesized values of $\theta$ using $g(T(x))$. 
+\end{itemize}
+\end{proof}
+\begin{rema}
+$g(T(x))=0$ a.s. just means $g$ is a trivial constant function.  
+\end{rema}
+\begin{cora}
+Let $Y$ be a complete sufficient statistic, and let $X$ be an arbitrary statistic. Suppose that $E_\theta \varphi(Y)=E_\theta X$ for all $\theta$ for some $(\theta$ independent) function $\varphi$. Show that then $E(X \mid Y)=\varphi(Y)$.
+\end{cora}
+\begin{proof}
+We have 
+\begin{align*}
+    E_\theta \bigg(E_\theta(X\mid Y)-\varphi(Y)\bigg) = E_\theta \varphi(Y)-E_\theta X= 0, \forall \theta,
+\end{align*}
+where $E_\theta(X\mid Y)-\varphi(Y)$ is a function of $Y$. From the definition of completeness, we know $E_\theta(X\mid Y)-\varphi(Y) = 0$ a.s. 
+\end{proof}
+\begin{exma}\bfs{Bernoulli Trials}\label{ex:ber_trial3}
+  In the Bernoulli trials \cref{ex:ber_trial2}, we have shown that   $T=X_{1}+\ldots+X_{n}$ is a  \tb{sufficient} statistic. Here we show it is also \tb{complete}. To check this, suppose that 
+\begin{align*}
+E g(T)=\sum g(t) P(T=t)=\sum_{t=0}^{n}\left(\begin{array}{l}
+n \\
+t
+\end{array}\right) \theta^{t}(1-\theta)^{n-t} g(t)=0
+\end{align*}
+for all $0 \leq \theta \leq 1$. Observe that this is a polynomial in $\theta$, which can only be identically equal to zero on an interval if all coefficients are zero. Now $Eg(T)=g(0)(1-\theta)^{n}+a_{1} \theta+\ldots+a_{n} \theta^{n}$, so it already follows that $g(0)=0$ because otherwise we will get a non-zero constant term. But then
+\begin{align*}
+\sum_{t=1}^{n}\left(\begin{array}{l}
+n \\
+t
+\end{array}\right) \theta^{t}(1-\theta)^{n-t} g(t)=0,
+\end{align*}
+and now we can divide through by $\theta$ and then repeat this argument to conclude that $g(1)=0$. Continuing in this way, we see that $g(0)=$ $g(1)=\ldots=g(n)=0$, so $g(T)=0$ identically, as desired.
+\end{exma}
+\begin{rema}
+Suppose now that we restrict $\theta$ to just the three values $\theta=0,1 / 2,1$. Is $T$ still complete then? The geometric interpretation discussed in \cref{rem:complete_geo} shows that the answer to this is clearly no, for random samples of size $n \geq 3$. Indeed, we only have three vectors $p(\cdot ; \theta)$, corresponding to the three possible values of $\theta$, but these vectors lie in an $(n+1)$ dimensional space because $t$ varies over $0,1, \ldots, n$, so they cannot possibly span the whole space.
+\end{rema}
+
+\subsubsection{Rao-Blackwell Theorem: Variance}
+This section is the preparation for next sections.
+In statistics, the Rao-Blackwell theorem, is a result which characterizes the transformation of an arbitrarily crude estimator into an estimator that is optimal by the mean-squared-error criterion or any of a variety of similar criteria.
+
+\begin{defa}\bfs{Rao-Blackwell Estimator}
+The Rao-Blackwell estimator $\delta_{1}(X)$ of an unobservable quantity $\theta$ is the conditional expected value $E(\delta(X)\mid T(X))$ of some estimator $\delta(X)$ given a sufficient statistic $T(X)$. 
+\end{defa}
+\begin{rema}
+Call $\delta(X)$ the "original estimator" and $\delta_{1}(X)$ the "improved estimator". It is important that the \tb{improved estimator be observable}, i.e. that it does not depend on $\theta$. The  definition of sufficiency gives this guarantee.
+\end{rema}
+
+\begin{thma}\bfs{Rao-Blackwell Theorem}\label{thm:Rao_Blackwell} We have a mean squared error version and a more general version:
+\begin{itemize}
+    \item \tb{Mean-squared-error version:}  The mean squared error of the Rao-Blackwell estimator does not exceed that of the original estimator.
+In other words,
+\begin{align*}
+\mathrm{E}\left(\left(\delta_{1}(X)-\theta\right)^{2}\right) \leq \mathrm{E}\left((\delta(X)-\theta)^{2}\right) .
+\end{align*}
+
+\item \tb{Convex loss generalization:} The more general version of the Rao-Blackwell theorem speaks of the "expected loss" or risk function:
+\begin{align*}
+\mathrm{E}\left(L\left(\delta_{1}(X)\right)\right) \leq \mathrm{E}(L(\delta(X)))
+\end{align*}
+where the "loss function" $L$ may be any convex function. If the loss function is twice-differentiable, as in the case for mean-squared-error, then we have the sharper inequality ${ }^{[4]}$
+\begin{align*}
+\mathrm{E}(L(\delta(X)))-\mathrm{E}\left(L\left(\delta_{1}(X)\right)\right) \geq \frac{1}{2} \mathrm{E}_{T}\left[\inf _{x} L^{\prime \prime}(x) \operatorname{Var}(\delta(X) \mid T)\right]
+\end{align*}
+\end{itemize}
+\end{thma}
+\begin{proof}
+We could use the law of total expectation and conditional Jensen’s inequality \cite[Theorem 4.1.10.]{durrett2019probability} to prove both. For mean square error, here we also can decompose the error as follows:
+\begin{align*}
+\mathrm{E}\left[\left(\delta_{1}(X)-\theta\right)^{2}\right]=\mathrm{E}\left[(\delta(X)-\theta)^{2}\right]-\mathrm{E}[\operatorname{Var}(\delta(X) \mid T(X))]
+\end{align*}
+Since $\mathrm{E}[\operatorname{Var}(\delta(X) \mid T(X))] \geq 0$, the Rao-Blackwell theorem immediately follows.
+\end{proof}
+\begin{exma}
+  Phone calls arrive at a switchboard according to a Poisson process at an average rate of $\lambda$ per minute. This rate is not observable, but the numbers $X_{1}, \ldots, X_{n}$ of phone calls that arrived during $n$ successive one-minute periods are observed. It is desired to estimate the probability $e^{-\lambda}$ that the next one-minute period passes with no phone calls.
+An extremely crude estimator of the desired probability is
+\begin{align*}
+\delta_{0}= \begin{cases}1 & \text { if } X_{1}=0 \\ 0 & \text { otherwise }\end{cases}
+\end{align*}
+i.e., it estimates this probability to be 1 if no phone calls arrived in the first minute and zero otherwise. Despite the apparent limitations of this estimator, the result given by its Rao-Blackwellization is a very good estimator.
+The sum
+\begin{align*}
+S_{n}=\sum_{i=1}^{n} X_{i}=X_{1}+\cdots+X_{n}
+\end{align*}
+can be readily shown to be a \tb{sufficient statistic} for $\lambda$, i.e., the conditional distribution of the data $X_{1}, \ldots, X_{n}$, depends on $\lambda$ only through this sum. Therefore, we find the \tb{Rao-Blackwell estimator}
+\begin{align*}
+\delta_{1}=\mathrm{E}\left(\delta_{0} \mid S_{n}=s_{n}\right) .
+\end{align*}
+After doing some algebra we have
+\begin{align*}
+\begin{aligned}
+\delta_{1} &=\mathrm{E}\left(\indicate{X_{1}=0} \mid \sum_{i=1}^{n} X_{i}=s_{n}\right) \\
+&=P\left(X_{1}=0 \mid \sum_{i=1}^{n} X_{i}=s_{n}\right) \\
+&=P\left(X_{1}=0, \sum_{i=2}^{n} X_{i}=s_{n}\right) \times P\left(\sum_{i=1}^{n} X_{i}=s_{n}\right)^{-1} \\
+&=e^{-\lambda} \frac{((n-1) \lambda)^{s_{n}} e^{-(n-1) \lambda}}{s_{n} !} \times\left(\frac{(n \lambda)^{s_{n}} e^{-n \lambda}}{s_{n} !}\right)^{-1} \\
+&=\frac{((n-1) \lambda)^{s_{n}} e^{-n \lambda}}{s_{n} !} \times \frac{s_{n} !}{(n \lambda)^{s_{n}}} e^{-n \lambda} \\
+&=\left(1-\frac{1}{n}\right)^{s_{n}}
+\end{aligned}
+\end{align*}
+Since the average number of calls arriving during the first $n$ minutes is $n \lambda$, one might not be surprised if this estimator has a fairly high probability (if $n$ is big) of being close to
+\begin{align*}
+\left(1-\frac{1}{n}\right)^{n \lambda} \approx e^{-\lambda}
+\end{align*}
+So $\delta_{1}$ is clearly a very much improved estimator of that last quantity.
+\end{exma}
+\begin{rema}
+ In fact, since $S_{n}$ is \tb{complete} and $\delta_{0}$ is \tb{unbiased}, $\delta_{1}$ is the unique minimum variance unbiased estimator by the Lehmann-Scheffé theorem.
+\end{rema}
+
+\subsubsection{Lehmann-Scheff\'e Theorem: MVUE}
+Intuitively, if a function of $T$ has mean value not dependent on $\theta$ (see the above proof of \cref{lem:gfda} for \tb{not completeness}), that mean value is not informative about $\theta$ and we could get rid of it to obtain a sufficient statistic "simpler". 
+
+
+\begin{thma}\bfs{Lehmann–Scheff\'e Theorem}
+Let $Y$ be a \tb{complete sufficient statistic}. 
+\begin{enumerate}
+    \item If there are unbiased estimators, then there exists a \tb{unique} minimum-variance unbiased estimator (MVUE). We can obtain the MVUE as $T=E(U \mid Y)$, for \tb{any unbiased} $U$.
+    \item The MVUE can also be characterized as the \tb{unique unbiased function} $\varphi(Y)$ of the complete sufficient statistic $Y$.
+\end{enumerate}
+
+
+\end{thma}
+
+\begin{rema}\bfs{explanation}
+The theorem states that any estimator which is unbiased for a given unknown quantity and that depends on the data only through a complete, sufficient statistic is the \tb{unique} best unbiased estimator of that quantity.
+\end{rema}
+\begin{proof}
+\begin{lema}\bfs{from \cite[Chapter 3.]{mitnotes}}\label{lem:mse}
+$\operatorname{Var}(E(X \mid Y)) \leq \operatorname{Var}(X)$. We have equality here precisely if $X=E(X \mid Y)$, which holds precisely if $X=f(Y)$ is a function of $Y$.
+\end{lema}
+
+If $U_{1}, U_{2}$ are any two unbiased estimators and we define $T_{j}=$ $E\left(U_{j} \mid Y\right)$, then $E\left(T_{2}-T_{1}\right)=0$. Since $T_{2}-T_{1}$ is a function of $Y$, completeness shows that $T_{1}=T_{2}$ with probability one. In other words, we always obtain the \tb{same (i.e. unique)} $T=E(U \mid Y)$, no matter which unbiased estimator $U$ we start out with. By Rao-Blackwell \cref{thm:Rao_Blackwell}, $T$ is an MVUE since it is unique and has minimum variance. Note it should have minimum variance by setting $U$ as a possible MVUE. 
+
+We next exclude the possibility that MVUE is not a function of $Y$. If $S$ is such an MVUE, then $S$ and $E(S \mid Y)$ have the same variance, by the Rao-Blackwell \cref{thm:Rao_Blackwell} again. Now \cref{lem:mse} shows that $S=E(S \mid Y)=T$, a contradiction. So the MVUE is unique, and need to be a unbiased function of $Y$. 
+
+Is this the \tb{only} unbiased function of $Y$? If $\varphi(Y)$ is unbiased, then $\varphi(Y)=E(\varphi(Y) \mid Y)=T$ is the unique MVUE, so this is indeed the only unbiased function of $Y$.
+\end{proof}
+\begin{rema}
+This proof has also clarified the precise technical meaning completeness and uniqueness: we identify two statistics that are equal to one another with probability one, for all $\theta$.
+\end{rema}
+
+
+
+\begin{exma}\bfs{Bernoulli Trials}\label{ex:ber_trial4}
+  We saw in \cref{ex:ber_trial3} that $Y=X_{1}+\ldots+X_{n}$ is \tb{complete and sufficient} for the Bernoulli trials.
+  \begin{itemize}
+      \item {Lehmann–Scheff\'e Theorem} now clarifies everything. Since $\bar{X}=Y / n$ is an unbiased function of $Y$, this is the \tb{unique MVUE}; there is no other unbiased estimator that achieves the same variance.
+      \item  Moreover, $\varphi(Y)$ is unbiased only for this specific function $\varphi(y)=y / n$.
+      \item In particular, $\bar{X}$ is the only \tb{efficient} estimator \cite[Chapter 3.]{mitnotes}. 
+  \end{itemize} 
+  \end{exma}
+\begin{exma}
+  Consider the uniform distribution $f(x)=1 / \theta, 0<x<\theta$. We know that $Y=\max X_{j}$ is sufficient. Is this statistic also complete? To answer this, recall that $Y$ has density $f_{Y}(y)=n y^{n-1} / \theta^{n}$. So $E g(Y)=0$ means that
+\begin{align*}
+\int_{0}^{\theta} g(y) y^{n-1} d y=0
+\end{align*}
+for all $\theta>0$. By differentiating with respect to $\theta$, we find from this that $g(y)=0$ for all $y>0$. So $Y$ is indeed complete.
+
+\begin{itemize}
+    \item We can prove that $T=\frac{n+1}{n} Y$ is unbiased, so this is the \tb{unique MVUE} and in fact the \tb{only unbiased function of $Y$}.
+    \item We can compute that $\operatorname{Var}(T)=\theta^{2} /(n(n+2))$, and this now turns out to be best possible. As we can also observe, this aymptotic behavior $\operatorname{Var}(T) \sim 1 / n^{2}$ is quite \tb{different from what we get from the Cram\'er-Rao bound} when it applies.
+\end{itemize} 
+\end{exma} 
+
+\paragraph{MUVE, MLE and Cram\'er-Rao bound}
+Recall from \cite[Chapter 3.]{mitnotes} that under \tb{unbiased assumption}, we have the Cram\'er-Rao bound for the estimator variance, an \tb{efficient estimator} is the one that can achieve equality. We list some conclusion here, for details please refer to  \cite[Chapter 3.]{mitnotes}.
+\begin{itemize}
+    \item If efficient estimator exist, it is unique, unbiased, MVUE and MLE.
+        \item efficient estimator $\Rightarrow$ MVUE, but efficient estimator $\nLeftarrow$ MVUE.
+    \item MVUE is unique and unbiased.
+    \item MVUE may not exists; efficient estimator may not exists. But MLE in most cases exists.
+    \item  efficient estimator $\Rightarrow$ MLE, but efficient estimator $\nLeftarrow$ MLE.
+\end{itemize}
+\begin{rema}
+See \cref{ex:ber_trial4,ex:exp_comp} for the illustration of the second conclusion.
+\end{rema}
+\begin{exma}\label{ex:exp_comp}
+  We consider the exponential distribution $f(x)=\theta e^{-\theta x}(x>0) .$ It is easy to show that $Y=X_{1}+\ldots+X_{n}$ is sufficient. We next show  $Y$ is also \tb{complete.}
+  
+  $Y$ has density
+\begin{align*}
+f(y)=\frac{\theta^{n}}{(n-1) !} y^{n-1} e^{-\theta y}, \quad y>0
+\end{align*}
+So $E g(Y)=0$ gives that
+\begin{align*}
+\int_{0}^{\infty} g(y) y^{n-1} e^{-\theta y} d y=0
+\end{align*}
+and this condition for all $\theta>0$ indeed implies that $g \equiv 0$. (The transform $(L h)(x)=\int_{0}^{\infty} h(y) e^{-x y} d y$ is called the Laplace transform of $h$,
+and completeness for the exponential distribution essentially follows from the uniqueness of Laplace transforms.)
+
+We can easily show $E(1 / Y)=\theta /(n-1)$. This identifies \tb{$T=(n-1) / Y$ as the unique unbiased function of $Y$, and thus this statistic is the unique MVUE for $\theta$}.
+
+What is $\operatorname{Var}(T)$ equal to? To answer this, I will need to extract the density of $Z=1 / Y$ from that of $Y$. We apply the usual technique of going through the cumulative distribution: $P(1 / Y \leq z)=$ $P(Y \geq 1 / z)=\int_{1 / z}^{\infty} f(t) d t$, and differentiation gives
+\begin{align*}
+f_{Z}(z)=\frac{1}{z^{2}} f(1 / z)=\frac{\theta^{n}}{(n-1) !} z^{-n-1} e^{-\theta / z}, \quad z>0 .
+\end{align*}
+It follows that
+\begin{align*}
+\begin{aligned}
+E Z^{2} &=\frac{\theta^{n}}{(n-1) !} \int_{0}^{\infty} z^{-n+1} e^{-\theta / z} d z=\frac{\theta^{2}}{(n-1) !} \int_{0}^{\infty} t^{n-3} e^{-t} d t \\
+&=\frac{\theta^{2}}{(n-1)(n-2)}
+\end{aligned}
+\end{align*}
+and since $E Z=\theta /(n-1)$, we obtain that $\operatorname{Var}(Z)=\theta^{2} /\left((n-1)^{2}(n-2)\right)$. Hence $\operatorname{Var}(T)=\theta^{2} /(n-2)$.
+
+On the other hand, the exponential density satisfies $\ln f=-\theta x+\ln \theta$, so
+\begin{align*}
+-\frac{\partial^{2}}{\partial \theta^{2}} \ln f(X, \theta)=\frac{1}{\theta^{2}}
+\end{align*}
+and thus the \tb{Fisher information is given by $I(\theta)=1 / \theta^{2}$}. So the estimator $T$ does not achieve the Cram\'er-Rao bound:
+\begin{align*}
+\operatorname{Var}(T)=\frac{\theta^{2}}{n-2}=\frac{n}{n-2} \frac{1}{n I(\theta)}>\frac{1}{n I(\theta)}
+\end{align*}
+Note $T$ is the (unique) MVUE,  and this variance that is (slightly) larger than the Cram\'er-Rao bound is the best we can get.
+\end{exma}
+
+\subsubsection{Basu's Theorem: Independence of Ancillary and Sufficient} \label{sec:basu}
+Recall from \cref{re:bcomple}:
+\begin{defa} \bfs{Boundedly Complete}
+The statistic $T$ is said to be \tb{boundedly complete} for the distribution of $X$ if the following completeness holds for every \tb{bounded}  measurable function $g$:
+
+\centerline{``$\mathrm{E}_{\theta}(g(T))=a$ for all $\theta$'' $\Rightarrow$ ``${P}_{\theta}(g(T)=a)=1$ for all $\theta$''}
+\end{defa}
+\begin{rema}
+\tb{Boundedly complete} is less restrict than \tb{complete}.
+\end{rema}
+\begin{thma}\bfs{Basu's Theorem}
+Let $\left(P_{\theta} ; \theta \in \Theta\right)$ be a family of distributions on a measurable space $(X, \mathcal{A})$ and $T, A$ measurable
+maps from $(X, \mathcal{A}$ ) to some measurable space $(Y, \mathcal{B}) .$ (Such maps are called a statistic.) If $T$ is a
+\tb{boundedly complete sufficient statistic} for $\theta$, and $A$ is \tb{ancillary} to $\theta$, then $T$ is \tb{independent} of $A$.
+\end{thma}
+\begin{proof}
+Let $P_{\theta}^{T}$ and $P_{\theta}^{A}$ be the marginal distributions of $T$ and $A$ respectively.
+Denote by $A^{-1}(B)$ the preimage of a set $B$ under the map $A$. For any measurable set $B \in \mathcal{B}$ we have
+\begin{align*}
+P_{\theta}^{A}(B)=P_{\theta}\left(A^{-1}(B)\right)=\int_{Y} P_{\theta}\left(A^{-1}(B) \mid T=t\right) P_{\theta}^{T}(d t) \text {. }
+\end{align*}
+The distribution $P_{\theta}^{A}$ does not depend on $\theta$ because $A$ is ancillary. Likewise, $P_{\theta}(\cdot \mid T=t)$ does not
+depend on $\theta$ because $T$ is sufficient. Therefore
+\begin{align*}
+\int_{Y}\left[P\left(A^{-1}(B) \mid T=t\right)-P^{A}(B)\right] P_{\theta}^{T}(d t)=0 .
+\end{align*}
+Note the integrand (the function inside the integral) is a function of $t$ and not $\theta$. Therefore, since $T$ is
+\tb{boundedly complete}, the function
+\begin{align*}
+g(t)=P\left(A^{-1}(B) \mid T=t\right)-P^{A}(B)
+\end{align*}
+is zero for $P_{\theta}^{T}$ almost all values of $t$ and thus
+\begin{align*}
+P\left(A^{-1}(B) \mid T=t\right)=P^{A}(B)
+\end{align*}
+for almost all $t .$ Therefore, $A$ is independent of $T .$
+\end{proof}
+
+\subsubsection{Bahadur's Theorem: Complete Implies Minimal}
+\begin{thma}\bfs{Bahadur's Theorem}
+If $T$ is a finite-dimensional \tb{boundedly complete sufficient} statistic, then it is \tb{minimal} sufficient.
+\end{thma} 
+\begin{proof}
+Let $U$ be an arbitrary sufficient statistic. We will show that $T$ is a function of $U$ by constructing the appropriate function. Put $T=\left(T_{1}(X), \ldots, T_{k}(X)\right)$ and $S_{i}(T)=\left[1+e^{-T_{i}}\right]^{-1}$ so that $S_{i}$ is bounded and bijective. Let
+\begin{align*}
+\begin{aligned}
+X_{i}(u) &=E_{\theta}\left[S_{i}(T) \mid U=u\right] \\
+Y_{i}(t) &=E_{\theta}\left[X_{i}(U) \mid T=t\right]
+\end{aligned}
+\end{align*}
+We want to show that $S_{i}(T)=X_{i}(U)$ $P_{\theta}$-a.s. for all $\theta$. Then, since $S_{i}$ is bijective we have $T_{i}=S_{i}^{-1}\left(X_{i}(U)\right)$ and the claim follows. We show $S_{i}(T)=X_{i}(U)$ $P_{\theta}$-a.s. in two steps.
+
+\tb{First step:} ``$S_{i}(T)=Y_{i}(T) P_{\theta}$-a.s. for all $\theta$''.
+
+To see this note that
+\begin{align*}
+E_{\theta}\left[Y_{i}(T)\right]=E_{\theta}\left[E_{\theta}\left[X_{i}(U) \mid T\right]\right]=E_{\theta}\left[X_{i}(U)\right]=E_{\theta}\left[E_{\theta}\left[S_{i}(T) \mid U\right]\right]=E_{\theta}\left[S_{i}(T)\right] .
+\end{align*}
+Hence, for all $\theta, E_{\theta}\left[Y_{i}(T)-S_{i}(T)\right]=0$ and since $S_{i}$ is bounded, so is $Y_{i}$ and bounded completeness implies $P_{\theta}\left(S_{i}(T)=Y_{i}(T)\right)=1$ for all $\theta$.
+
+\tb{Second step:} ``$X_{i}(U)=Y_{i}(T)$ $P_{\theta}$-a.s. for all $\theta$''. 
+
+By step one we have $E_{\theta}\left[Y_{i}(T) \mid\right.$ $U]=X_{i}(U)$ $P_{\theta}$-a.s. So if we show that the conditional variance of $Y_{i}(T)$ given $U$ is zero we are done. That is, we need to show $\operatorname{Var}_{\theta}\left(Y_{i}(T) \mid U\right)=0$ $P_{\theta}$-a.s. By the usual rule for conditional variance,
+\begin{align*}
+\begin{aligned}
+\operatorname{Var}_{\theta}\left(Y_{i}(T)\right) &=E_{\theta}\left[\operatorname{Var}_{\theta}\left(Y_{i}(T) \mid U\right)\right]+\operatorname{Var}_{\theta}\left(X_{i}(U)\right) \\
+&=E_{\theta}\left[\operatorname{Var}_{\theta}\left(Y_{i}(T) \mid U\right)\right]+E_{\theta}\left[\operatorname{Var}_{\theta}\left(X_{i}(U) \mid T\right)\right]+\operatorname{Var}_{\theta}\left(S_{i}(T)\right)
+\end{aligned}
+\end{align*}
+By step one $\operatorname{Var}_{\theta}\left(Y_{i}(T)\right)=\operatorname{Var}_{\theta}\left(S_{i}(T)\right)$ and $E_{\theta}\left[\operatorname{Var}_{\theta}\left(X_{i}(U) \mid T\right)\right]=0$ since $X_{i}(U)$ is known if $T$ is known. Combining this we see that $\operatorname{Var}_{\theta}\left(Y_{i}(T) \mid U\right)=0$ $P_{\theta}$-a.s. as we wanted.
+\end{proof}
+
+\subsection{Exponential Families}
+Exponential families probability models include normal, binomial, Poisson, gamma, beta, and multinomial regression models used to relate a response variable $Y$ to a set of predictor variables. It has one  common feature that there is a \tb{natural sufficient statistic whose dimension as a random vector is independent of the sample size}. More generally, these families form the basis for an important class of models called generalized linear models. 
+\subsubsection{The One-Parameter Case}
+\paragraph{Definition and Examples}
+\begin{defa}\bfs{One-parameter Exponential Family}
+The family of distributions of a model $\left\{P_{\theta}: \theta \in \Theta\right\}$, is said to be a one-parameter exponential family, if there exist \begin{itemize}
+    \item {real-valued functions $\eta(\theta), B(\theta)$} on $\Theta$, and 
+    \item {real-valued functions} $T$ and $h$ on $R^{q}$,
+\end{itemize}such that the density (frequency) functions $p(x, \theta)$ of the $P_{\theta}$ may be written as: 
+\begin{align*}
+p(x, \theta)=h(x) \exp \{\eta(\theta) T(x)-B(\theta)\}
+\end{align*}
+where $x \in \mathcal{X} \subset R^{q}$. Note that the functions $\eta, B$, and $T$ are not unique.
+\end{defa}
+
+From \cref{thm:frac}, we shall refer to $T$ as a \tb{natural sufficient statistic} of the family.
+Here are some examples.
+\begin{exma}\bfs{The Poisson Distribution}\label{possion_0}
+ Let $P_{\theta}$ be the Poisson distribution with unknown mean $\theta$. Then, for $x \in\{0,1,2, \cdots\}$,
+\begin{align*}
+p(x, \theta)=\frac{\theta^{x} e^{-\theta}}{x !}=\frac{1}{x !} \exp \{x \log \theta-\theta\}, \theta>0
+\end{align*}
+Therefore, the $P_{\theta}$ form a one-parameter exponential family with
+\begin{align*}
+q=1, \eta(\theta)=\log \theta, B(\theta)=\theta, T(x)=x, h(x)=\frac{1}{x !} .
+\end{align*}
+\end{exma}
+\begin{exma}\bfs{The Binomial Family}\label{ex:bionomia_0}
+Suppose $X$ has a $\mathcal{B}(n, \theta)$ distribution, $0<\theta<1$. Then, for $x \in\{0,1, \ldots, n\}$
+\begin{align*}
+\begin{aligned}
+p(x, \theta) &=\left(\begin{array}{l}
+n \\
+x
+\end{array}\right) \theta^{x}(1-\theta)^{n-x} \\
+&=\left(\begin{array}{l}
+n \\
+x
+\end{array}\right) \exp \left[x \log \left(\frac{\theta}{1-\theta}\right)+n \log (1-\theta)\right]
+\end{aligned}
+\end{align*}
+Therefore, the family of distributions of $X$ is a one-parameter exponential family with
+\begin{align*}
+q=1, \eta(\theta)=\log \left(\frac{\theta}{1-\theta}\right), B(\theta)=-n \log (1-\theta), T(x)=x, h(x)=\left(\begin{array}{l}
+n \\
+x
+\end{array}\right) \text {. }
+\end{align*}
+\end{exma}
+\begin{exma}
+Suppose $X=(Z, Y)^{T}$ where $Y=Z+\theta W, \theta>0, Z$ and $W$ are independent $\mathcal{N}(0,1)$. Then
+\begin{align*}
+\begin{aligned}
+f(x, \theta) &=f(z, y, \theta)=f(z) f_{\theta}(y \mid z)=\varphi(z) \theta^{-1} \varphi\left((y-z) \theta^{-1}\right) \\
+&=(2 \pi \theta)^{-1} \exp \left\{-\frac{1}{2}\left[z^{2}+(y-z)^{2} \theta^{-2}\right]\right\} \\
+&=(2 \pi)^{-1} \exp \left\{-\frac{1}{2} z^{2}\right\} \exp \left\{-\frac{1}{2} \theta^{-2}(y-z)^{2}-\log \theta\right\}
+\end{aligned}
+\end{align*}
+This is a one-parameter exponential family distribution with
+\begin{align*}
+q=2, \eta(\theta)=-\frac{1}{2} \theta^{-2}, B(\theta)=\log \theta, T(x)=(y-z)^{2}, h(x)=(2 \pi)^{-1} \exp \left\{-\frac{1}{2} z^{2}\right\} .
+\end{align*}
+\end{exma}
+
+\paragraph{IID Samples}
+The families of distributions obtained by sampling from one-parameter exponential families are themselves one-parameter exponential families.
+
+Specifically, suppose $X_{1}, \ldots, X_{m}$ are \gls{iid} samples from the  one-parameter exponential family $P_{\theta}$. The family of  the joint distributions of $\mathbf{X}=\left(X_{1}, \ldots, X_{m}\right)$, denoted as $\left\{P_{\theta}^{(m)}\right\}, \theta \in \Theta$, has the following density (frequency) functions:
+\begin{align*}
+\begin{aligned}
+p(\mathbf{x}, \theta) &=\prod_{i=1}^{m} h\left(x_{i}\right) \exp \left[\eta(\theta) T\left(x_{i}\right)-B(\theta)\right] \\
+&=\left[\prod_{i=1}^{m} h\left(x_{i}\right)\right] \exp \left[\eta(\theta) \sum_{i=1}^{m} T\left(x_{i}\right)-m B(\theta)\right]
+\end{aligned}
+\end{align*}
+where $\mathbf{x}=\left(x_{1}, \ldots, x_{m}\right)\in R^{mq}$
+
+$\bullet$ \tb{Conclusion:}
+
+\begin{enumerate}
+    \item $P_{\theta}^{(m)}$ form a one-parameter exponential family.
+    \item If we use the superscript $m$ to denote the corresponding $T, \eta, B$, and $h$, then $q^{(m)}=m q$, and
+    \begin{itemize}
+        \item $\eta^{(m)}(\theta) =\eta(\theta)$
+        \item $T^{(m)}(\mathbf{x})=\sum_{i=1}^{m} T\left(x_{i}\right)$
+        \item $B^{(m)}(\theta)=m B(\theta)$
+        \item $h^{(m)}(\mathbf{x})=\prod_{i=1}^{m} h\left(x_{i}\right)$
+    \end{itemize}
+\end{enumerate}
+\begin{rema}\bfs{what if not identical?}\label{re:notiid}
+\begin{enumerate}
+    \item Note that the natural sufficient statistic $T^{(m)}$ is \tb{one-dimensional} whatever be $m.$ 
+    \item For \tb{independent but not identical} $k$ samples. It turns to be a \tb{$k$-parameter} exponential family, with:
+    \begin{itemize}
+        \item real-valued functions $\eta_{1}, \ldots, \eta_{k}$ 
+        \item real-valued functions $T_{1}, \ldots, T_{k}$ 
+        \item $h^{(m)}(\mathbf{x})=\prod_{i=1}^{m} h\left(x_{i}\right)$
+        \item $B^{(m)}(\theta)=\sum B_i(\theta)$
+    \end{itemize}
+    This is the so called \tb{supermodels} as shown in \cref{sec:sup}. 
+\end{enumerate}
+\end{rema}
+
+
+Some other important examples are summarized in the following table.
+\begin{table}[H]
+    \centering
+\begin{tabular}{cc|c|c} 
+distributions & & $\eta(\theta)$ & $T(x)$ \\
+\hline $\mathcal{N}\left(\mu, \sigma^{2}\right)$ & $\sigma^{2}$ fixed & $\mu / \sigma^{2}$ & $x$ \\
+\cline { 2 - 4 } & $\mu$ fixed & $-1 / 2 \sigma^{2}$ & $(x-\mu)^{2}$ \\
+\hline$\Gamma(p, \lambda)$ & $p$ fixed & $-\lambda$ & $x$ \\
+\hline & $\lambda$ fixed & $(p-1)$ & $\log x$ \\
+\hline$\beta(r, s)$ & $r$ fixed & $(s-1)$ & $\log (1-x)$ \\
+\cline { 2 - 4 } & $s$ fixed & $(r-1)$ & $\log x$ \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{thma}\bfs{$T$ Itself Is Exponential}
+ Let $\left\{P_{\theta}\right\}$ be a one-parameter exponential family of discrete distributions with corresponding functions $T, \eta, B$, and $h$, then the family of distributions of the statistic $T(X)$ is a one-parameter exponential family of discrete distributions whose frequency
+functions may be written
+\begin{align*}
+h^{*}(t) \exp \{\eta(\theta) t-B(\theta)\}
+\end{align*}
+for suitable $h^{*}$.
+\end{thma}
+\begin{proof}
+By definition,
+\begin{align*}
+\begin{aligned}
+P_{\theta}[T(x)=t] &=\sum_{\{x: T(x)=t\}} p(x, \theta) \\
+&=\sum_{\{x: T(x)=t\}} h(x) \exp [\eta(\theta) T(x)-B(\theta)] \\
+&=\exp [\eta(\theta) t-B(\theta)]\left\{\sum_{\{x: T(x)=t\}} h(x)\right\}
+\end{aligned}
+\end{align*}
+If we let $h^{*}(t)=\sum_{\{x: T(x)=t\}} h(x)$, the result follows.
+\end{proof} 
+A similar theorem holds in the continuous case if the distributions of $T(X)$ are themselves continuous.
+
+\paragraph{Canonical Exponential Families: Reparametrization}
+We obtain an important and useful reparametrization of the exponential family by letting the model be \tb{indexed by $\eta$ rather than $\theta$}. The exponential family then has the form
+\begin{align}
+q(x, \eta)=h(x) \exp [\eta T(x)-A(\eta)], x \in \mathcal{X} \subset R^{q}\label{eq:mfezcd}
+\end{align}
+where $$A(\eta)=\log \int \cdots \int h(x) \exp [\eta T(x)] d x$$ in the continuous case and the integral is replaced by a sum in the discrete case.
+\begin{rema}
+In some cases, we uniformly just write it as $A(\eta)=\log \int \cdots \int h(x) \exp [\eta T(x)] \nu(d x)$, with $\nu$ being a Lebesgue measure or the counting measure.
+\end{rema}
+\begin{rema}\bfs{some clarify}
+
+\begin{enumerate}
+    \item Let $\mathcal{E}$ be the collection of all $\eta$ such that $A(\eta)$ is finite:
+    $$\mathcal{E}=\{\eta: -\infty<A(\eta)<\infty\}.$$ Then as we show in \cref{sec:bef}, $\mathcal{E}$ is either an \tb{interval or all of $R$}. 
+    \item The class of models \cref{eq:mfezcd} with $\eta \in \mathcal{E}$ contains the class of models with $\theta \in \Theta$. So \cref{eq:mfezcd} is a \tb{bigger} class.
+    \item The model given by \cref{eq:mfezcd} with $\eta$ ranging over $\mathcal{E}$ is called the \tb{canonical one-parameter exponential family generated by $T$ and $h$}.
+    \item $\mathcal{E}$ is called the \tb{natural parameter space} and $T$ is called the \tb{natural sufficient statistic}.
+\end{enumerate}
+\end{rema}  
+\begin{lema}\bfs{Convexity}\label{lem:con_onepara}
+The \tb{natural parameter space} $\mathcal{E}$ is convex and $A(\eta)$ is convex. 
+\end{lema}
+\begin{proof}
+Recall H\"{o}lder's inequality: For $a \in[0,1], b=1-a$,
+\begin{align*}
+\int f g \leq\left(\int f^{1 / a}\right)^{a}\left(\int g^{1 / b}\right)^{b}
+\end{align*}
+Consider distinct parameters $\eta_{1} \in \mathcal{N}$ and $\eta_{2} \in \mathcal{N}$ and let $\eta=\lambda \eta_{1}+(1-\lambda) \eta_{2}$, for $0<\lambda<1$. We have:
+\begin{align*}
+\begin{aligned}
+e^{A(\eta)} &=\int e^{\left(\lambda \eta_{1}+(1-\lambda) \eta_{2}\right)^{T} T(x)} h(x) \nu(d x) \\
+& = \int e^{\lambda\eta_{1} T(x)} h^{\lambda}(x)  e^{(1-\lambda)\eta_{2} T(x)} h^{1-\lambda}(x) \nu(d x)\\
+& \leq\left(\int\left(e^{\lambda \eta_{1}^{T} T(x)}\right)^{\frac{1}{\lambda}} h(x) \nu(d x)\right)^{\lambda}\left(\int\left(e^{(1-\lambda) \eta_{2}^{T} T(x)}\right)^{\frac{1}{1-\lambda}} h(x) \nu(d x)\right)^{1-\lambda} \\
+&=\left(\int\left(e^{\eta_{1} T(x)}\right) h(x) \nu(d x)\right)^{\lambda}\left(\int\left(e^{\eta_{2} T(x)}\right) h(x) \nu(d x)\right)^{1-\lambda}\\
+&= e^{\lambda A(\eta_1)+(1-\lambda)A(\eta_2)}.
+\end{aligned}
+\end{align*}
+% This establishes that $\mathcal{N}$ is convex, because it shows that the integral on the left is finite if both integrals on the right are finite. Also, taking logarithms yields:
+% \begin{align*}
+% A\left(\lambda \eta_{1}+(1-\lambda) \eta_{2}\right) \leq \lambda A\left(\eta_{1}\right)+(1-\lambda) A\left(\eta_{2}\right)
+% \end{align*}
+% which establishes the convexity of $A(\eta)$.
+% Theorem 1. The natural parameter space $\mathcal{N}$ is convex (as a set) and the cumulant function $A(\eta)$ is convex (as a function). If the family is minimal (later we see that this means $T$) then $A(\eta)$ is strictly convex.
+
+% Proof. The proofs of both convexity results follow from an application of Hölder's inequality. 
+% Hölder's inequality is strict unless $e^{\eta_{1}^{T} T(X)}$ is proportional to $e^{\eta_{2}^{T} T(X)}$ (with probability one). But this would imply that $\left(\eta_{1}-\eta_{2}\right)^{T} T(X)$ is equal to a constant with probability one, which is not possible in a minimal family.
+\end{proof}
+\begin{exma}\bfs{The Poisson Distribution}\label{possion_1} The Poisson family in canonical form is
+\begin{align*}
+q(x, \eta)=(1 / x !) \exp \big\{\eta x-\exp [\eta]\big\}, x \in\{0,1,2, \ldots\}
+\end{align*}
+where $\eta=\log \theta$,
+\begin{align*}
+\exp \{A(\eta)\}=\sum_{x=0}^{\infty}\left(e^{\eta x} / x !\right)=\sum_{x=0}^{\infty}\left(e^{\eta}\right)^{x} / x !=\exp \left(e^{\eta}\right)
+\end{align*}
+and $\mathcal{E}=R$.
+Here is a useful result.
+\end{exma}
+\begin{thma}\label{thm:mom_gen_one_para}
+If $X$ is distributed according to \cref{eq:mfezcd} and $\eta$ is an interior point of $\mathcal{E}$, the \tb{moment-generating function of $T(X)$} exists and is given by
+\begin{align*}
+M(s)=\exp [A(s+\eta)-A(\eta)]
+\end{align*}
+for $s$ in some neighborhood of $0$.
+Moreover,
+\begin{align*}
+E(T(X))=A^{\prime}(\eta), \quad \operatorname{Var}(T(X))=A^{\prime \prime}(\eta)
+\end{align*}
+\end{thma} 
+\begin{rema}\bfs{Relation to Cramer's Theorem}\label{re:fgere} (We keep using the notation in that note here)
+In 	``Information Theory, Statistics and Inequality'' note, we define a probability measure $\nu_{\lambda_0}$ on $\mathbb{R}$ using measure $\mu$:
+			\begin{align*}
+			\nu_{\lambda_0}(A)=\frac{1}{\E_\mu[\exp(\lambda_0 X_1)]}\int_{A}\exp(\lambda x)\ud \mu\ \ \forall A \in\mathbb{B}(\mathbb{R})
+			\end{align*}
+		and a random variable $Y\sim \nu_{\lambda_0}$, so that we get
+		$$	\Lambda'(\lambda) =\E [Y] \text{ and } \Lambda''(\lambda)=\mathrm{var}[Y],$$
+		where $\Lambda = \log \E_\mu [\exp(\lambda X)]$ is the logarithmic moment generating function.
+	This is a special case of the above theorem.  As we can see the  measure $\nu_{\lambda_0}$ has the exponential family type density (however it is w.r.t. the arbitrary dominate measure $\mu$.) ``$\Lambda$ here corresponds to $A(\eta)$''. 
+	
+	\tb{So in some sense, from that note, we know exponential family with the Radon-Nikodym density w.r.t. the arbitrary dominate measure has the same conclusion for  $A(\eta)$ (in this note we only take $\mu$ as the Lebesgue measure and consider continuous random variables).}
+\end{rema}
+
+
+Proof. We give the proof in the continuous case. We compute
+\begin{align*}
+\begin{aligned}
+M(s) &=E(\exp (s T(X)))=\int \cdots \int h(x) \exp [(s+\eta) T(x)-A(\eta)] d x \\
+&=\{\exp [A(s+\eta)-A(\eta)]\} \int \cdots \int h(x) \exp [(s+\eta) T(x)-A(s+\eta)] d x \\
+&=\exp [A(s+\eta)-A(\eta)]
+\end{aligned}
+\end{align*}
+because the last factor, being the integral of a density, is one. The rest of the theorem follows from the moment generating property of $M(s)$ (see \cite[Section A.12]{Statistics}).
+\begin{exma}\bfs{Rayleigh Distribution}
+Suppose $X_{1}, \ldots, X_{n}$ is a sample from a population with density
+\begin{align*}
+p(x, \theta)=\left(x / \theta^{2}\right) \exp \left(-x^{2} / 2 \theta^{2}\right), \quad x>0, \theta>0 .
+\end{align*}
+This is known as the Rayleigh distribution. It is used to model the density of "time until failure" for certain types of equipment. Now
+\begin{align*}
+\begin{aligned}
+p(\mathbf{x}, \theta) &=\left(\prod_{i=1}^{n}\left(x_{i} / \theta^{2}\right)\right) \exp \left(-\sum_{i=1}^{n} x_{i}^{2} / 2 \theta^{2}\right) \\
+&=\left(\prod_{i=1}^{n} x_{i}\right) \exp \left[\frac{-1}{2 \theta^{2}} \sum_{i=1}^{n} x_{i}^{2}-n \log \theta^{2}\right]
+\end{aligned}
+\end{align*}
+Here $\eta=-1 / 2 \theta^{2}, \theta^{2}=-1 / 2 \eta, B(\theta)=n \log \theta^{2}$ and $A(\eta)=-n \log (-2 \eta)$. Therefore, the natural sufficient statistic $\sum_{i=1}^{n} X_{i}^{2}$ has mean $-n / \eta=2 n \theta^{2}$ and variance $n / \eta^{2}=$ $4 n \theta^{4}$. Direct computation of these moments is more complicated.
+\end{exma}
+
+\subsubsection{The Multiparameter Case}
+\paragraph{Definition}
+One-parameter exponential families are naturally indexed by a one-dimensional real parameter $\eta$ and admit a one-dimensional sufficient statistic $T(x)$. We now study the general families with a $k$ dimensional parameter and admit a $k$-dimensional sufficient statistic.
+\begin{defa}\bfs{$k$-parameter Exponential Family}\label{def:kpara_exp}
+A family of distributions $\left\{P_{\boldsymbol{\theta}}: \boldsymbol{\theta} \in \Theta\right\}, \Theta \subset R^{k}$, is said to be a \tb{$k$-parameter exponential family}, if there exist
+\begin{itemize}
+    \item real-valued functions $\eta_{1}, \ldots, \eta_{k}$ and $B$ of $\boldsymbol{\theta}$, and 
+    \item real-valued functions $T_{1}, \ldots, T_{k}, h$ on $R^{q}$,
+\end{itemize} such that the density (frequency) functions of the $P_{\theta}$ may be written as,
+\begin{align*}
+p(x, \boldsymbol{\theta})=h(x) \exp \left[\sum_{j=1}^{k} \eta_{j}(\boldsymbol{\theta}) T_{j}(x)-B(\boldsymbol{\theta})\right], \quad x \in \mathcal{X} \subset R^{q}
+\end{align*}
+\end{defa}
+By \cref{thm:frac}, the vector $\mathbf{T}(X)=\left(T_{1}(X), \ldots, T_{k}(X)\right)^{T}$ is sufficient. It will be referred to as a \tb{natural sufficient statistic} of the family.
+\paragraph{IID Samples}\label{sec:mul_iid}
+Again, suppose $\mathbf{X}=\left(X_{1}, \ldots, X_{m}\right)^{T}$ where the $X_{i}$ are independent and identically distributed and their common distribution ranges over a $k$-parameter exponential family. Then we have 
+
+\begin{enumerate}
+    \item $P_{\boldsymbol{\theta}}^{(m)}$ form a one-parameter exponential family.
+    \item If we use the superscript $m$ to denote the corresponding $T, \eta, B$, and $h$, then $q^{(m)}=m q$, and
+    \begin{itemize}
+        \item $\eta^{(m)}_i(\theta) =\eta(\theta)_i$. for $i=1,...,k$
+        \item $\mathbf{T}^{(m)}(\mathbf{X})=\left(\sum_{i=1}^{m} T_{1}\left(X_{i}\right), \ldots, \sum_{i=1}^{m} T_{k}\left(X_{i}\right)\right)^{T}$
+        \item $B^{(m)}(\theta)=m B(\theta)$
+        \item $h^{(m)}(\mathbf{x})=\prod_{i=1}^{m} h\left(x_{i}\right)$
+    \end{itemize}
+\end{enumerate}
+Note that the natural sufficient statistic $T^{(m)}$ is \tb{$k$-dimensional} whatever be $m$. \tb{What if not identical?} See \cref{sec:sup} for \tb{supermodels}.
+\begin{exma}\bfs{\gls{iid} Gaussian}\label{ex:iid_gaussian_1}
+Suppose that $P_{\theta}=\mathcal{N}\left(\mu, \sigma^{2}\right), \Theta=\left\{\left(\mu, \sigma^{2}\right):-\infty<\right.$ $\left.\mu<\infty, \sigma^{2}>0\right\}$. The density of $P_{\theta}$ may be written as
+\begin{align*}
+p(x, \boldsymbol{\theta})=\exp \left[\frac{\mu}{\sigma^{2}} x-\frac{x^{2}}{2 \sigma^{2}}-\frac{1}{2}\left(\frac{\mu^{2}}{\sigma^{2}}+\log \left(2 \pi \sigma^{2}\right)\right)\right],
+\end{align*}
+which corresponds to a \tb{two-parameter exponential family} with $q=1, \theta_{1}=\mu, \theta_{2}=\sigma^{2}$, and
+\begin{align*}
+\begin{aligned}
+\eta_{1}(\boldsymbol{\theta}) &=\frac{\mu}{\sigma^{2}}, T_{1}(x)=x, \eta_{2}(\boldsymbol{\theta})=-\frac{1}{2 \sigma^{2}}, T_{2}(x)=x^{2} \\
+B(\boldsymbol{\theta}) &=\frac{1}{2}\left(\frac{\mu^{2}}{\sigma^{2}}+\log \left(2 \pi \sigma^{2}\right)\right), h(x)=1
+\end{aligned}
+\end{align*}
+If we observe a sample $\mathbf{X}=\left(X_{1}, \ldots, X_{m}\right)$ from a $\mathcal{N}\left(\mu, \sigma^{2}\right)$ population, then the preceding discussion leads us to the natural sufficient statistic
+\begin{align*}
+\left(\sum_{i=1}^{m} X_{i}, \sum_{i=1}^{m} X_{i}^{2}\right)^{T}
+\end{align*}
+which we obtained in the previous \cref{ex:iid_gaussian_0}.
+\end{exma} 
+\paragraph{Canonical Exponential Families: Reparametrization}\label{sec:cano_exp}
+Again it will be convenient to consider the \tb{"biggest"} families, letting the model be indexed by $\boldsymbol{\eta}=\left(\eta_{1}, \ldots, \eta_{k}\right)^{T}$ rather than $\boldsymbol{\theta}$. Thus, the canonical $k$-parameter exponential family generated by $\mathbf{T}$ and $h$ is
+\begin{align}
+q(x, \boldsymbol{\eta})=h(x) \exp \left\{\mathbf{T}^{T}(x) \boldsymbol{\eta}-A(\boldsymbol{\eta})\right\}, x \in \mathcal{X} \subset R^{q}\label{eq:mul_exp_den}
+\end{align}
+where $\mathbf{T}(x)=\left(T_{1}(x), \ldots, T_{k}(x)\right)^{T}$ and, in the continuous case,
+\begin{align*}
+A(\boldsymbol{\eta})=\log \int_{-\infty}^{\infty} \cdots \int_{-\infty}^{\infty} h(x) \exp \left\{\mathbf{T}^{T}(x) \boldsymbol{\eta}\right\} d x
+\end{align*}
+In the discrete case, $A(\boldsymbol{\eta})$ is defined in the same way except integrals over $R^{q}$ are replaced by sums. In either case, we define the \tb{natural parameter} space as
+\begin{align*}
+\mathcal{E}=\left\{\boldsymbol{\eta} \in R^{k}:-\infty<A(\boldsymbol{\eta})<\infty\right\} .
+\end{align*}
+\begin{exma}\bfs{\gls{iid} Gaussian}\label{ex:iid_gaussian_2}
+We know in this example, $k=2, \mathbf{T}^{T}(x)=\left(x, x^{2}\right)=$ $\left(T_{1}(x), T_{2}(x)\right), \eta_{1}=\mu / \sigma^{2}, \eta_{2}=-1 / 2 \sigma^{2}, A(\boldsymbol{\eta})=\frac{1}{2}\left[\left(-\eta_{1}^{2} / 2 \eta_{2}\right)+\log \left(\pi /\left(-\eta_{2}\right)\right)\right]$ $h(x)=1$ and $\mathcal{E}=R \times R^{-}=\left\{\left(\eta_{1}, \eta_{2}\right): \eta_{1} \in R, \eta_{2}<0\right\} .$
+\end{exma} 
+\begin{exma}\bfs{Linear Regression}
+ Suppose as in \cref{sssec:regress} that $Y_{1}, \ldots, Y_{n}$ are independent, $Y_{i} \sim \mathcal{N}\left(\mu_{i}, \sigma^{2}\right)$, with $\mu_{i}=\beta_{1}+\beta_{2} z_{i}, i=1, \ldots, n$. From \cref{ex:2d_regress}, the density of $\mathbf{Y}=\left(Y_{1}, \ldots, Y_{n}\right)^{T}$ can be put in canonical form with $k=3$, $\mathbf{T}(\mathbf{Y})=\left(\sum Y_{i}, \sum z_{i} Y_{i}, \sum Y_{i}^{2},\right)^{T}, \eta_{1}=\beta_{1} / \sigma^{2}, \eta_{2}=\beta_{2} / \sigma^{2}, \eta_{3}=-1 / 2 \sigma^{2}$,
+\begin{align*}
+A(\boldsymbol{\eta})=\frac{-n}{4 \eta_{3}}\left[\eta_{1}^{2}+\widehat{m}_{2} \eta_{2}^{2}+\bar{z} \eta_{1} \eta_{2}+2 \log \left(\pi /-\eta_{3}\right)\right]
+\end{align*}
+and $\mathcal{E}=\left\{\left(\eta_{1}, \eta_{2}, \eta_{3}\right): \eta_{1} \in R, \eta_{2} \in R, \eta_{3}<0\right\}$, where $\widehat{m}_{2}=n^{-1} \sum z_{i}^{2}$.
+\end{exma} 
+\begin{exma}\bfs{Multinomial Trials}\label{ex:mul_trial_0} We observe the outcomes of $n$ independent trials where each trial can end up in one of $k$ possible categories.
+
+$\diamond$ \tb{Intuitive Model:}
+
+   We write the outcome vector as $\mathbf{X}=\left(X_{1}, \ldots, X_{n}\right)^{T}$ where the $X_{i}$ are i.i.d. as $X$ and the sample space of each $X_{i}$ is the $k$ categories $\{1,2, \ldots, k\} .$ Let $T_{j}(\mathbf{x})=\sum_{i=1}^{n} 1\left[X_{i}=j\right]$, and $\lambda_{j}=P\left(X_{i}=j\right)$. Then $p(\mathbf{x}, \boldsymbol{\lambda})=\prod_{j=1}^{k} \lambda_{j}^{T_{j}(\mathbf{x})}, \boldsymbol{\lambda} \in \Lambda$, where $\Lambda$ is the simplex $\left\{\boldsymbol{\lambda} \in R^{k}: 0<\lambda_{j}<\right.$ $\left.1, j=1, \ldots, k, \sum_{j=1}^{k} \lambda_{j}=1\right\}$. 
+ 
+ $\diamond$ \tb{Canonical Model:} 
+ 
+  It will often be more convenient to work with unrestricted parameters. In this example, we can achieve this by the reparametrization
+\begin{align*}
+\lambda_{j}=e^{\alpha_{j}} / \sum_{j=1}^{k} e^{\alpha_{j}}, j=1, \ldots, k, \boldsymbol{\alpha} \in R^{k} .
+\end{align*}
+Now we can write the likelihood as
+\begin{align*}
+q_{0}(\mathbf{x}, \boldsymbol{\alpha})=\exp \left\{\sum_{j=1}^{k} \alpha_{j} T_{j}(\mathbf{x})-n \log \sum_{j=1}^{k} \exp \left(\alpha_{j}\right)\right\} .
+\end{align*}
+This is a $k$-parameter canonical exponential family generated by $T_{1}, \ldots, T_{k}$ and $h(\mathbf{x})=$ $\prod_{i=1}^{n} 1\left[x_{i} \in\{1, \ldots, k\}\right]$ with canonical parameter $\boldsymbol{\alpha}$ and $\mathcal{E}=R^{k}$. However $\boldsymbol{\alpha}$ is not identifiable because $q_{0}(\mathbf{x}, \boldsymbol{\alpha}+c \mathbf{1})=q_{0}(\mathbf{x}, \boldsymbol{\alpha})$ for $\mathbf{1}=(1, \ldots, 1)^{T}$ and all $c$. This is because of the \tb{rank of this exponential family} is just $k-1$. This can be remedied by considering
+\begin{align*}
+\mathbf{T}_{(k-1)}(\mathbf{x}) \equiv\left(T_{1}(\mathbf{x}), \ldots, T_{k-1}(\mathbf{x})\right)^{T},
+\end{align*}
+$\eta_{j}=\log \left(\lambda_{j} / \lambda_{k}\right)=\alpha_{j}-\alpha_{k}, 1 \leq j \leq k-1$, and rewriting
+\begin{align*}
+q(\mathbf{x}, \boldsymbol{\eta})=\exp \left\{\mathbf{T}_{(k-1)}^{T}(\mathbf{x}) \boldsymbol{\eta}-n \log \left(1+\sum_{j=1}^{k-1} e^{\eta_{j}}\right)\right\}
+\end{align*}
+where
+\begin{align*}
+\lambda_{j}=\frac{e^{\eta_{j}}}{1+\sum_{j=1}^{k-1} e^{\eta_{j}}}=\frac{e^{\alpha_{j}}}{\sum_{j=1}^{k} e^{\alpha_{j}}}, j=1, \ldots, k-1
+\end{align*}
+Note that $q(\mathbf{x}, \boldsymbol{\eta})$ is a $k-1$ parameter canonical exponential family generated by $\mathbf{T}_{(k-1)}$ and $h(\mathbf{x})=\prod_{i=1}^{n} 1\left[x_{i} \in\{1, \ldots, k\}\right]$ with canonical parameter $\boldsymbol{\eta}$ and $\mathcal{E}=R^{k-1} .$ Moreover, the parameters $\eta_{j}=\log \left(P_{\boldsymbol{\eta}}[X=j] / P_{\boldsymbol{\eta}}[X=k]\right), 1 \leq j \leq k-1$, are identifiable. Note that the model for $\mathbf{X}$ is unchanged.
+\end{exma}
+\subsubsection{Building Exponential Families}\label{sec:bef}
+\paragraph{Submodels}
+
+\begin{defa}\bfs{Submodels}\label{def:sub}
+ Consider a $k$-parameter canonical exponential family $\left\{q(\mathbf{x}, \boldsymbol{\eta}) ; \boldsymbol{\eta} \in \mathcal{E} \subset R^{k}\right\}$, the \tb{submodel} is an exponential family defined by
+\begin{align}
+p(x, \boldsymbol{\theta})=q(x, \boldsymbol{\eta}(\boldsymbol{\theta}))\label{eq:sub}
+\end{align}
+where $\boldsymbol{\theta} \in \Theta \subset R^{l}, l \leq k$, and $\boldsymbol{\eta}$ is a map $\Theta \rightarrow R^{k}$. 
+\end{defa}
+\begin{rema} Note:
+\begin{enumerate}
+    \item The submodel is specified by $\Theta$.
+    \item The natural parameters corresponding to $\Theta$ are a \tb{subset} of the natural parameter space $\mathcal{E}^{*}=\{\eta \in \mathcal{E}: \eta=\eta(\theta), \theta \in \Theta\}$. This is why we call it \tb{submodel}.
+\end{enumerate}
+\end{rema}
+
+\begin{exma}
+Thus, if $X$ is discrete taking on $k$ values as in \cref{ex:mul_trial_0} and $\mathbf{X}=\left(X_{1}, \ldots, X_{n}\right)^{T}$ where the $X_{i}$ are i.i.d. as $X$, then \tb{all models} (i.e. any subset of the simplex) for $\mathbf{X}$ are exponential families because they are submodels of the multinomial trials model.
+\end{exma}
+
+\paragraph{Affine Transformations}
+$\bullet$ \tb{Case I:}
+
+\begin{itemize}
+    \item Consider $\mathcal{P}$, the class of canonical family generated by the natural sufficient statistic $\mathbf{T}(X)$, a $(k \times 1)$ vector-statistic $\boldsymbol{\eta}$, and $h(\cdot): \mathcal{X} \rightarrow R $. A distribution in $\mathcal{P}$ has 
+    \begin{align*}
+q(x, \boldsymbol{\eta})=h(x) \exp \left\{\mathbf{T}^{T}(x) \boldsymbol{\eta}-A(\boldsymbol{\eta})\right\}, x \in \mathcal{X} \subset R^{q}
+\end{align*}
+\item $M$: an affine tranformation form $R^{k}$ to $R^{l}$ defined by
+\begin{align*}
+\mathbf{M}(\mathbf{T})=M_{\ell \times k} \mathbf{T}+\mathbf{b}_{\ell \times 1},
+\end{align*}
+where $M$ is $l \times k$ and $b$ is $l \times 1$, are known constants.
+We then have
+\begin{align*}
+\begin{aligned}
+p(x, \boldsymbol{\eta}) &=h(x) \exp \left\{\left[M(\mathbf{T}(x))]^{T} \boldsymbol{\eta}^{*}-A^{*}\left(\boldsymbol{\eta}^{*}\right)\right\}\right.\\
+&=h(x) \exp \left\{[M \mathbf{T}(x)+b]^{T} \boldsymbol{\eta}^{*}-A^{*}\left(\boldsymbol{\eta}^{*}\right)\right\} \\
+&=h(x) \exp \left\{\mathbf{T}^{T}(x)\left[M^{T} \boldsymbol{\eta}^{*}\right]+b^{T} \boldsymbol{\eta}^{*}-A^{*}\left(\boldsymbol{\eta}^{*}\right)\right\}\\
+&=h(x) \exp \left\{\mathbf{T}^{T}(x)\left[M^{T} \boldsymbol{\eta}^{*}\right]-A^{* *}\left(\boldsymbol{\eta}^{*}\right)\right\}
+\end{aligned}
+\end{align*}
+The corresponding \tb{subfamily} of $\mathcal{P}$  has parameter space
+\begin{align*}
+\Theta=\left\{\boldsymbol{\eta}^{*}: \exists \boldsymbol{\eta} \in \mathcal{E}: \boldsymbol{\eta}=M^{T} \boldsymbol{\eta}^{*}\right\}
+\end{align*} 
+Note also that density will be constant for level sets of $M(\bT(x))$,  the new \tb{natural sufficient statistic.} 
+\end{itemize}
+$\bullet$ \tb{Case II:}
+\begin{itemize}
+    \item Similarly, if $\Theta \subset R^{\ell}$ and $\boldsymbol{\eta}(\boldsymbol{\theta})=B_{k \times \ell} \boldsymbol{\theta} \subset R^{k}$, then the resulting subfamily of $\mathcal{P}$ above is a \tb{submodel} of the exponential family generated by \tb{natural sufficient statistic $B^{T} \mathbf{T}(X)$ and $h$}. 
+\end{itemize}
+
+
+
+\begin{exma}\bfs{Logistic Regression}\label{ex:log_reg}
+ Let $Y_{i}$ be independent binomial, $\mathcal{B}\left(n_{i}, \lambda_{i}\right), 1 \leq i \leq$ $n$. If the $\lambda_{i}$ are unrestricted, $0<\lambda_{i}<1,1 \leq i \leq n$, this, from \cref{ex:bionomia_0}, is an \tb{$n$-parameter} canonical exponential family generated by $\mathbf{T}\left(Y_{1}, \ldots, Y_{n}\right)=\mathbf{Y}, h(\mathbf{y})=\prod_{i=1}^{n}\left(\begin{array}{c}n_{i} \\ y_{i}\end{array}\right) 1\left(0 \leq y_{i} \leq n_{i}\right) .$ Here $\eta_{i}=\log \frac{\lambda_{i}}{1-\lambda_{i}}$, $A(\boldsymbol{\eta})=\sum_{i=1}^{n} n_{i} \log \left(1+e^{\eta_{i}}\right) .$ 
+ 
+ $\diamond$ \tb{a linear transformation}:
+ 
+ However, let $x_{1}<\ldots<x_{n}$ be specified levels and
+\begin{align*}
+\eta_{i}(\boldsymbol{\theta})=\theta_{1}+\theta_{2} x_{i}, \quad 1 \leq i \leq n, \quad \boldsymbol{\theta}=\left(\theta_{1}, \theta_{2}\right)^{T} \in R^{2} .
+\end{align*}
+This is a \tb{linear transformation} $\boldsymbol{\eta}(\boldsymbol{\theta})=B_{n \times 2} \boldsymbol{\theta}$ corresponding to $B_{n \times 2}=(\mathbf{1}, \mathbf{x})$, where $\mathbf{1}$ is $(1, \ldots, 1)^{T}, \mathbf{x}=\left(x_{1}, \ldots, x_{n}\right)^{T} .$ Then this is the \tb{two-parameter} canonical exponential family generated by $B^T\mathbf{Y}=\left(\sum_{i=1}^{n} Y_{i}, \sum_{i=1}^{n} x_{i} Y_{i}\right)^{T}$ and $h$ with
+\begin{align*}
+A\left(\theta_{1}, \theta_{2}\right)=\sum_{i=1}^{n} n_{i} \log \left(1+\exp \left(\theta_{1}+\theta_{2} x_{i}\right)\right) .
+\end{align*}
+
+ $\diamond$ \tb{logistic regression application: determine the toxicity}:
+ 
+This model is sometimes applied in experiments to determine the toxicity of a substance. The $Y_{i}$ represent the number of animals dying out of $n_{i}$ when exposed to level $x_{i}$ of the substance. It is assumed that each animal has a random toxicity threshold $X$ such that death results if and only if a substance level on or above $X$ is applied. Assume also:
+\begin{enumerate}[(a).]
+    \item independent: No interaction between animals (independence) in relation to drug effects
+    \item The distribution of $X$ in the animal population is logistic:
+    \begin{align*}
+P[X \leq x]=\left[1+\exp \left\{-\left(\theta_{1}+\theta_{2} x\right)\right\}\right]^{-1}
+\end{align*}
+$\theta_{1} \in R, \theta_{2}>0$.
+\end{enumerate}
+Then (and only then),
+\begin{align*}
+\log (P[X \leq x] /(1-P[X \leq x]))=\theta_{1}+\theta_{2} x
+\end{align*}
+\end{exma}
+\paragraph{Curved Exponential Families}
+In \cref{def:sub} we define the submodels, with the parameter space in $\boldsymbol{\theta}$. If we still look at the $\boldsymbol{\eta}$ space, it is an canonical  exponential family. However, as we know exponential family is \tb{bigger} than the traditional definition of $k$-parameter exponential family shown in \cref{def:kpara_exp}. So one possibility here remains is that the  submodels w.r.t. $\boldsymbol{\theta}$ does \tb{not belong to exponential familily}.
+
+\begin{defa}\bfs{Curved Exponential Families}
+ Submodel  \cref{def:sub} of exponential families are called \tb{curved exponential} if
+ \begin{itemize}
+     \item the range of $\boldsymbol{\eta}(\boldsymbol{\theta})$ restricted to a subset of dimension $l$ with $l \leq k-1$
+     \item they \tb{do not form a canonical exponential family in the $\theta$ parametrization.}
+ \end{itemize}
+\end{defa}
+
+\begin{exma}\bfs{Gaussian with Fixed Signal-to-Noise Ratio}
+ In the normal case with $X_{1}, \ldots, X_{n}$ i.i.d. $\mathcal{N}\left(\mu, \sigma^{2}\right)$, suppose the ratio $|\mu| / \sigma$, which is called the coefficient of variation or signal-to-noise ratio, is a known constant $\lambda_{0}>0$. Then, with $\theta=\mu$, we can write
+\begin{align*}
+p(\mathbf{x}, \theta)=\exp \left\{\lambda_{0}^{2} \theta^{-1} T_{1}-\frac{1}{2} \lambda_{0}^{2} \theta^{-2} T_{2}-\frac{1}{2} n\left[\lambda_{0}^{2}+\log \left(2 \pi \lambda_{0}^{-2} \theta^{2}\right)\right]\right\}
+\end{align*}
+where $T_{1}=\sum_{i=1}^{n} x_{i}, T_{2}=\sum_{i=1}^{n} x_{i}^{2}, \eta_{1}(\theta)=\lambda_{0}^{2} \theta^{-1}$ and $\eta_{2}(\theta)=-\frac{1}{2} \lambda_{0}^{2} \theta^{-2}$. This is a curved exponential family with $l=1$.
+\end{exma}
+\begin{exma}\bfs{Logistic Regression}
+ In \cref{ex:log_reg}, the $\boldsymbol{\theta}$ parametrization has dimension $2$, which is less than $k=n$ when $n>3$. However, $p(x, \boldsymbol{\theta})$ in the $\boldsymbol{\theta}$ parametrization is a canonical exponential family, so it is \tb{not a curved family}.
+\end{exma}
+
+
+\paragraph{Supermodels}\label{sec:sup}
+We have already noted that the exponential family structure is preserved under i.i.d. sampling. Even more is true. Let $Y_{j}, 1 \leq j \leq n$, be \tb{independent but not necessaily identical}, $Y_{j} \in \mathcal{Y}_{j} \subset R^{q}$, with an exponential family density and then \tb{same parameter} $\boldsymbol{\eta}(\boldsymbol{\theta})$:
+\begin{align*}
+q_{j}\left(y_{j}, \boldsymbol{\theta}\right)=\exp \left\{\mathbf{T}_{j}^{T}\left(y_{j}\right) \boldsymbol{\eta}(\boldsymbol{\theta})-B_{j}(\boldsymbol{\theta})\right\} h_{j}\left(y_{j}\right), \boldsymbol{\theta} \in \Theta \subset R^{k}
+\end{align*}
+Then for $\mathbf{Y} \equiv\left(Y_{1}, \ldots, Y_{n}\right)^{T}$, we have the new \tb{supermodels of exponential family}, with
+\begin{itemize}
+    \item  natural sufficient statistic $\mathbf{T}(\mathbf{Y})=$ $\sum_{j=1}^{n} \mathbf{T}_{j}\left(Y_{j}\right)$ 
+    \item $h=\prod_{j=1}^{n} h_{j}\left(y_{j}\right)$
+    \item  parameter $\boldsymbol{\eta}(\boldsymbol{\theta})$
+    \item $B(\boldsymbol{\theta})=\sum_{j=1}^{n} B_{j}(\boldsymbol{\theta}) .$
+\end{itemize}
+\begin{rema}\bfs{what if \tb{not the same parameter} $\boldsymbol{\eta}_i(\boldsymbol{\theta})$?}
+It is still an  exponential family similar to the discussion in \cref{re:notiid}. Here we do note consider the most general case.
+\end{rema}
+
+\begin{exma}\bfs{Logistic Regression}
+ In \cref{ex:log_reg}, it exhibits $Y_{j}$ as being distributed according to a \tb{two-parameter family} generated by $T_{j}\left(Y_{j}\right)=\left(Y_{j}, x_{j} Y_{j}\right)$ and we can apply the \tb{supermodel} approach to reach the same conclusion as before.
+\end{exma}
+\subsubsection{Properties of Exponential Families}
+
+We discuss the general properties $k$-parameter families. Some of them have alreadily been discussed before, e.g. in \cref{lem:con_onepara} and \cref{thm:mom_gen_one_para}
+
+\paragraph{Definitions for Random Vector}
+For any random vector $\mathbf{T}_{k \times 1}$, we define
+\begin{itemize}
+    \item \tb{moment-generating function:}
+    \begin{align*}
+M(\mathbf{s}) \equiv E e^{\mathbf{s}^{T} \mathbf{T}}
+\end{align*}
+\item \tb{expectation:}
+\begin{align*}
+E(\mathbf{T}) \equiv\left(E\left(T_{1}\right), \ldots, E\left(T_{k}\right)\right)^{T}
+\end{align*}
+\item \tb{variance:}
+\begin{align*}
+\operatorname{Var}(\mathbf{T})=\left\|\operatorname{Cov}\left(T_{a}, T_{b}\right)\right\|_{k \times k}
+\end{align*}
+\end{itemize}
+
+\paragraph{Moment-Generating Function Theorem}
+\begin{thma}\label{thm:mom_gen_exp}
+Let $\mathcal{P}$ be a canonical $k$-parameter exponential family generated by $(\mathbf{T}, h)$ with corresponding natural parameter space $\mathcal{E}$ and function $A(\boldsymbol{\eta})$. Then
+\begin{enumerate}[(a).]
+    \item $\mathcal{E}$ is convex
+    \item $A: \mathcal{E} \rightarrow R$ is convex
+    \item If $\mathcal{E}$ has nonempty interior $\mathcal{E}^{0}$ in $R^{k}$ and $\boldsymbol{\eta}_{0} \in \mathcal{E}^{0}$, then $\mathbf{T}(X)$ has under $\boldsymbol{\eta}_{0}$ a moment-generating function $M$ given by
+\begin{align*}
+M(\mathbf{s})=\exp \left\{A\left(\boldsymbol{\eta}_{0}+\mathbf{s}\right)-A\left(\boldsymbol{\eta}_{0}\right)\right\}
+\end{align*}
+valid for all $\mathbf{s}$ such that $\boldsymbol{\eta}_{0}+\mathbf{s} \in \mathcal{E}$. Since $\boldsymbol{\eta}_{0}$ is an interior point this set of $\mathbf{s}$ includes a ball about $\mathbf{0}$.
+\end{enumerate}
+\end{thma}
+\begin{cora}
+Under the conditions of \cref{thm:mom_gen_exp},
+\begin{align*}
+\begin{aligned}
+E_{\boldsymbol{\eta}_{0}} \mathbf{T}(X) &=\dot{A}\left(\boldsymbol{\eta}_{0}\right) \\
+\operatorname{Var} \boldsymbol{\eta}_{0} \mathbf{T}(X) &=\ddot{A}\left(\boldsymbol{\eta}_{0}\right)
+\end{aligned}
+\end{align*}
+where $\dot{A}\left(\boldsymbol{\eta}_{0}\right)=\left(\frac{\partial A}{\partial \eta_{1}}\left(\boldsymbol{\eta}_{0}\right), \ldots, \frac{\partial A}{\partial \eta_{k}}\left(\boldsymbol{\eta}_{0}\right)\right)^{T}, \ddot{A}\left(\boldsymbol{\eta}_{0}\right)=\left\|\frac{\partial^{2} A}{\partial \eta_{a} \partial \eta_{b}}\left(\boldsymbol{\eta}_{0}\right)\right\|$.
+\end{cora}
+\begin{proof} 
+The corollary follows immediately from \cite[Theorem B.5.1]{Statistics} and \cref{thm:mom_gen_exp} (c). See also \cref{re:fgere} for the discussion between the connection of the corollary and ``Information Theory, Statistics and Inequality'' note. Actually we have prove the one-dim case of  \cite[Theorem B.5.1]{Statistics}  in that notes. For the high-dim general case, we use moment-generating function defined above for random vector and partial derivative, note the proof is quite similar.  The differentiability is also from  \cite[Theorem B.5.1]{Statistics} or the ``Information Theory, Statistics and Inequality'' note.
+\end{proof}
+\begin{proof} (of \cref{thm:mom_gen_exp}) We prove (b) first. Suppose $\boldsymbol{\eta}_{1}, \boldsymbol{\eta}_{2} \in \mathcal{E}$ and $0 \leq \alpha \leq 1$. By the Hölder inequality as in \cref{lem:con_onepara}, for any $u(x), v(x), h(x) \geq 0, r, s>0$ with $\frac{1}{r}+\frac{1}{s}=1$,
+\begin{align*}
+\int u(x) v(x) h(x) d x \leq\left(\int u^{r}(x) h(x) d x\right)^{\frac{1}{r}}\left(\int v^{s}(x) h(x) d x\right)^{\frac{1}{s}} .
+\end{align*}
+Substitute $\frac{1}{r}=\alpha, \frac{1}{s}=1-\alpha, u(x)=\exp \left(\alpha \boldsymbol{\eta}_{1}^{T} \mathbf{T}(x)\right), v(x)=\exp \left((1-\alpha) \boldsymbol{\eta}_{2}^{T} \mathbf{T}(x)\right)$ and take logs of both sides to obtain, (with $\infty$ permitted on either side),
+\begin{align*}
+A\left(\alpha \boldsymbol{\eta}_{1}+(1-\alpha) \boldsymbol{\eta}_{2}\right) \leq \alpha A\left(\boldsymbol{\eta}_{1}\right)+(1-\alpha) A\left(\boldsymbol{\eta}_{2}\right)
+\end{align*}
+which is (b). (a) is then follows. (c) is similar to the proof in \cref{thm:mom_gen_one_para}.
+\end{proof}
+\begin{exma}\bfs{Multinomial Trials}\label{ex:mul_trial_1} 
+In multinomial trials \cref{ex:mul_trial_0}, with the $\boldsymbol{\alpha}$ parametrization:
+\begin{align*}
+A(\boldsymbol{\alpha})=n \log \left(\sum_{j=1}^{k} e^{\alpha_{j}}\right).
+\end{align*}
+We then have
+\begin{align*}
+E_{\boldsymbol{\lambda}}\left(T_{j}(\mathbf{X})\right)=n P_{\boldsymbol{\lambda}}[X=j] \equiv n \lambda_{j}=n e^{\alpha_{j}} / \sum_{\ell=1}^{k} e^{\alpha_{\ell}}
+\end{align*}
+\begin{align*}
+\begin{aligned}
+\operatorname{Cov}_{\boldsymbol{\lambda}}\left(T_{i}, T_{j}\right) &=\frac{\partial^{2} A}{\partial \alpha_{i} \partial \alpha_{j}}(\boldsymbol{\alpha})=-n \frac{e^{\alpha_{j}} e^{\alpha_{i}}}{\left(\sum_{\ell=1}^{k} e^{\alpha_{\ell}}\right)^{2}}=-n \lambda_{i} \lambda_{j}, i \neq j \\
+\operatorname{Var}_{\boldsymbol{\lambda}}\left(T_{i}\right) &=\frac{\partial^{2} A}{\partial \alpha_{i}^{2}}(\boldsymbol{\alpha})=n \lambda_{i}\left(1-\lambda_{i}\right)
+\end{aligned}
+\end{align*}
+\end{exma}
+\paragraph{The Rank Theorem of An Exponential Family}
+Evidently every $k$-parameter exponential family is also $k^{\prime}$-dimensional with $k^{\prime}>k$. However, there is a \tb{minimal dimension}.
+\begin{defa}\bfs{Rank}
+ An exponential family is of \tb{rank $k$} iff the generating statistic $\mathbf{T}$ is $k$-dimensional and $1, T_{1}(X), \ldots, T_{k}(X)$ are \tb{linearly independent with positive probability}:
+ $$P_{\eta}\left[\sum_{j=1}^{k} a_{j} T_{j}(X)=a_{k+1}\right]<1 \text{ unless all $a_{j}$ are 0.}$$
+\end{defa}
+
+\begin{lema}\label{lem:drewqr}
+For a set $A\in \mathbb{B}$ (borel algebra in continuous case and counting algebra in discrete case), we have $P_{\boldsymbol{\theta}}(A)=0$ or $P_{\boldsymbol{\theta}}(A)<1$ (with dominated measure $\nu$, e.g. Lebesgue or counting)for \tb{some} $\boldsymbol{\theta}$ iff the corresponding statement holds for \tb{all} $\boldsymbol{\theta}\in\calE$.
+\end{lema}
+\begin{proof}
+This because $0<\frac{p\left(x, \boldsymbol{\theta}_{1}\right)}{p\left(x, \boldsymbol{\theta}_{2}\right)}<\infty$ for all $x, \boldsymbol{\theta}_{1}, \boldsymbol{\theta}_{2}$ such that $h(x)>0$ and $\boldsymbol{\theta}_{1}, \boldsymbol{\theta}_{2}\in\calE$. Please also note $\exp(\cdot)>0$. 
+From the formula \cref{eq:mul_exp_den}, we have if $P_{\boldsymbol{\theta}}(A)=0$ for one $\boldsymbol{\theta}$. Over this $A$ (we assume $\nu(A)>0$, otherwise we have $0$ already), we must have $h(x)=0$ a.s. (w.r.t. the measure $\nu$  restricted to set $A$). For any other $\boldsymbol{\theta}\in\calE$, we therefore still have $P_{\boldsymbol{\theta}}(A)=0$. The conclusion for $P_{\boldsymbol{\theta}}(A)<1$ follows after we take $A^c$.
+\end{proof}
+
+\begin{exma} For several previous examples, we can check that
+\begin{enumerate}
+    \item In {multinomial trials}, we can see that the multinomial family is of rank $\le k-1$. In fact its rank $=k$ as we can conclude from  \cref{thm:fffdfea} below.
+    \item  In \cref{ex:log_reg} \bfs{logistic regression},  if $n=1$, and $\eta_{1}(\theta)=\theta_{1}+\theta_{2} x_{1}$ we are writing the \tb{one-parameter} binomial family corresponding to $Y_{1}$ as a two-parameter family with generating statistic $\left(Y_{1}, x_{1} Y_{1}\right).$ But the \tb{rank is 1} and $\theta_{1}$ and $\theta_{2}$ are \tb{not identifiable}. However, if $n \geq 2$ and $x_{1}<x_{n}$, the family has rank $\leq 2$ and is in fact of rank $2$. We can conclude this also from \cref{thm:fffdfea} below.
+\end{enumerate}
+\end{exma}
+\begin{thma}\label{thm:fffdfea}\bfs{Rank Theorem}
+ Suppose $\mathcal{P}=\{q(x, \boldsymbol{\eta}) ; \boldsymbol{\eta} \in \mathcal{E}\}$ is a canonical exponential family generated by $\left(\mathbf{T}_{k \times 1}, h\right)$ with natural parameter space $\mathcal{E}$ such that $\mathcal{E}$ is \tb{open}. Then the following are equivalent.
+ \begin{enumerate}[(i)]
+     \item $\mathcal{P}$ is of rank $k$.
+     \item $\eta$ is a parameter (identifiable).
+     \item $\operatorname{Var} \boldsymbol{\eta}(\mathbf{T})$ is positive definite.
+     \item $\boldsymbol{\eta} \rightarrow \dot{A}(\boldsymbol{\eta})$ is 1-1 on $\mathcal{E}$.
+     \item $A$ is strictly convex on $\mathcal{E}$.
+ \end{enumerate}
+\end{thma}
+\begin{rema}
+Note that, by \cref{thm:mom_gen_exp}, because $\mathcal{E}$ is open, $\dot{A}$ is defined on all of $\mathcal{E}$.
+\end{rema}
+\begin{proof}
+ We give a detailed proof for $k=1$. The proof for $k>1$ is similar with the convex set is open (i.e. convex hull has full dim) condition.
+ 
+``(i) is false '' $\Leftrightarrow$ ``$P_{\eta}\left[a_{1} T=a_{2}\right]=1$ for $a_{1} \neq 0$''. This is equivalent to $\operatorname{Var}_{\eta}(T)=0 \Leftrightarrow$ ``(iii) is false''
+
+``(ii) is false '' $\Leftrightarrow$ There exist $\eta_{1} \neq \eta_{2}$ such that $P_{\eta_{1}}=P_{\eta_{2}} .$
+Equivalently
+\begin{align*}
+\exp \left\{\eta_{1} T(x)-A\left(\eta_{1}\right)\right\} h(x)=\exp \left\{\eta_{2} T(x)-A\left(\eta_{2}\right)\right\} h(x)
+\end{align*}
+Taking logs we obtain $\left(\eta_{1}-\eta_{2}\right) T(X)=A\left(\eta_{2}\right)-A\left(\eta_{1}\right)$ with probability $1$ $\Leftrightarrow$ ``(i) is false''
+
+We, thus, have (i) $\equiv$ (ii) $\equiv$ (iii). 
+
+Now (iii) $\Rightarrow A''(\eta)>0$ by \cref{thm:mom_gen_one_para} and, hence, $A^{\prime}(\eta)$ is strictly monotone increasing and 1-1. 
+
+Conversely, $A''\left(\eta_{0}\right)=0$ for some $\eta_{0}$ implies that $T \equiv c$, with probability 1 , for all $\eta$, by \cref{lem:drewqr}, which implies that $A^{\prime \prime}(\eta)=0$ for all $\eta$ and, hence, $A^{\prime}$ is constant. Thus, (iii) $\equiv$ (iv) and the same discussion shows that (iii) $\equiv$ (v).
+\end{proof}
+\begin{cora}
+Suppose that the conditions of \cref{thm:fffdfea} hold and $\mathcal{P}$ is of rank $k$. Then
+\begin{enumerate}[(a).]
+    \item $\mathcal{P}$ may be uniquely parametrized by $\boldsymbol{\mu}(\boldsymbol{\eta}) \equiv E_{\boldsymbol{\eta}} \mathbf{T}(X)$ where $\boldsymbol{\mu}$ ranges over $\dot{A}(\mathcal{E})$,
+    \item $\log q(x, \boldsymbol{\eta})$ is a strictly concave function of $\boldsymbol{\eta}$ on $\mathcal{E}$.
+\end{enumerate}
+\end{cora}
+\begin{proof}
+ This is just a restatement of (iv) and (v) of the theorem.
+\end{proof} 
+\begin{rema}
+The relation in (a) is sometimes evident and the $\mu$ parametrization is close to the initial parametrization of classical $\mathcal{P}$. Thus, the  family is parametrized by $E(T(X))$.
+\end{rema}
+\begin{exma}We check previous examples, and have that
+\begin{enumerate}
+    \item The binomial family  $\mathcal{B}(n, \boldsymbol{\theta})$ in \cref{ex:bionomia_0} is therefore parametrized by $E(X)$, where $X$ is the Bernoulli trial
+    \item The $\mathcal{N}\left(\mu, \sigma_{0}^{2}\right)$ family with fixed $\sigma_{0}^{2}$ is  parametrized by $E(X) .$ 
+    \item For $\left\{\mathcal{N}\left(\mu, \sigma^{2}\right)\right\}, E\left(X, X^{2}\right)=$ $\left(\mu, \sigma^{2}+\mu^{2}\right)$, which is obviously a $1-1$ function of $\left(\mu, \sigma^{2}\right) .$
+\end{enumerate}
+\end{exma}
+
+\begin{exma}\bfs{The $p$ Variate Gaussian Family}
+  Recall that $\mathbf{Y}_{p \times 1}$ has a $p$ variate Gaussian distribution, $\mathcal{N}_{p}(\boldsymbol{\mu}, \Sigma)$, with mean $\boldsymbol{\mu}_{p \times 1}$ and positive definite variance covariance matrix $\sum_{p \times p}$, iff its density is
+\begin{align*}
+f(\mathbf{Y}, \boldsymbol{\mu}, \Sigma)=|\operatorname{det}(\Sigma)|^{-p / 2}(2 \pi)^{-p / 2} \exp \left\{-\frac{1}{2}(\mathbf{Y}-\boldsymbol{\mu})^{T} \Sigma^{-1}(\mathbf{Y}-\boldsymbol{\mu})\right\} .
+\end{align*}
+Rewriting the exponent we obtain
+\begin{align*}
+\begin{aligned}
+\log f(\mathbf{Y}, \boldsymbol{\mu}, \Sigma) &=-\frac{1}{2} \mathbf{Y}^{T} \Sigma^{-1} \mathbf{Y}+\left(\Sigma^{-1} \boldsymbol{\mu}\right)^{T} \mathbf{Y} \\
+&-\frac{1}{2}\left(\log |\operatorname{det}(\Sigma)|+\boldsymbol{\mu}^{T} \Sigma^{-1} \boldsymbol{\mu}\right)-\frac{p}{2} \log \pi
+\end{aligned}
+\end{align*}
+The first two terms on the right in (1.6.17) can be rewritten
+\begin{align*}
+-\left(\sum_{1 \leq i<j \leq p} \sigma^{i j} Y_{i} Y_{j}+\frac{1}{2} \sum_{i=1}^{p} \sigma^{i i} Y_{i}^{2}\right)+\sum_{i=1}^{p}\left(\sum_{j=1}^{p} \sigma^{i j} \mu_{j}\right) Y_{i}
+\end{align*}
+where $\Sigma^{-1} \equiv\left\|\sigma^{i j}\right\|$, revealing that this is a $k=p(p+3) / 2$ parameter exponential family with statistics $\left(Y_{1}, \ldots, Y_{p},\left\{Y_{i} Y_{j}\right\}_{1 \leq i \leq j \leq p}\right), h(\mathbf{Y}) \equiv 1, \boldsymbol{\theta}=(\boldsymbol{\mu}, \Sigma), B(\boldsymbol{\theta})=$ $\frac{1}{2}\left(\log |\operatorname{det}(\Sigma)|+\boldsymbol{\mu}^{T} \Sigma^{-1} \boldsymbol{\mu}\right) .$ 
+
+$\diamond$ \tb{supermodel \gls{iid} case:}
+
+By our supermodel discussion, if $\mathbf{Y}_{1}, \ldots, \mathbf{Y}_{n}$ are iid $\mathcal{N}_{p}(\boldsymbol{\mu}, \Sigma)$, then $\mathbf{X} \equiv\left(\mathbf{Y}_{1}, \ldots, \mathbf{Y}_{n}\right)^{T}$ follows the $k=p(p+3) / 2$ parameter exponential family with $\mathbf{T}=\left(\sum_{i} \mathbf{Y}_{i}, \sum_{i} \mathbf{Y}_{i} \mathbf{Y}_{i}^{T}\right)$, where we identify the second element of $\mathbf{T}$, which is a $p \times p$ symmetric matrix, with its distinct $p(p+1) / 2$ entries. It may be shown that $\mathbf{T}$ (and $h \equiv 1$ ) generate this family and that the rank of the family is indeed $p(p+3) / 2$, generalizing \cref{ex:iid_gaussian_1} the \gls{iid} 1-dim Gaussian case, since $\mathcal{E}$ is open, so that Rank \cref{thm:fffdfea} applies.
+\end{exma}
+
+\subsubsection{Conjugate Families of Prior Distributions: Bayes Case}
+
+In \cref{re:conju_beta} in \cref{sec:bayesian}, we considered beta prior distributions for the probability of success in $n$ Bernoulli trials. This is a special case of conjugate families of priors, families to which the posterior after sampling also belongs.
+
+From \cref{sec:mul_iid}, suppose $X_{1}, \ldots, X_{n}$ is a \gls{iid} sample from the $k$-parameter exponential family, and, as we always do in the Bayesian context, write $p(\mathbf{x} \mid \theta)$ for $p(\mathbf{x}, \theta)$. Then 
+\begin{align}
+p(\mathbf{x} \mid \boldsymbol{\theta})=\left[\prod_{i=1}^{n} h\left(x_{i}\right)\right] \exp \left\{\sum_{j=1}^{k} \eta_{j}(\boldsymbol{\theta}) \sum_{i=1}^{n} T_{j}\left(x_{i}\right)-n B(\boldsymbol{\theta})\right\}\label{eq:tezcd}
+\end{align}
+where $\theta \in \Theta$, which is $k$-dimensional. 
+
+$\bullet$ \tb{Preparation:}
+
+ A \tb{conjugate} exponential family is obtained from \cref{eq:tezcd} by letting $n$ and $t_{j}=\sum_{i=1}^{n} T_{j}\left(x_{i}\right), j=1, \ldots, k$, be "parameters" and treating $\boldsymbol{\theta}$ as the variable of interest. That is, let
+ \begin{itemize}
+     \item  $\mathbf{t}=\left(t_{1}, \ldots, t_{k+1}\right)^{T}$,
+     \item $\omega(\mathbf{t}) =\int_{-\infty}^{\infty} \cdots \int_{-\infty}^{\infty} \exp \left\{\sum_{j=1}^{k} t_{j} \eta_{j}(\boldsymbol{\theta})-t_{k+1} B(\boldsymbol{\theta})\right\} d \theta_{1} \cdots d \theta_{k}$
+     \item $\Omega =\left\{\left(t_{1}, \ldots, t_{k+1}\right): 0<\omega\left(t_{1}, \ldots, t_{k+1}\right)<\infty\right\}$
+     with integrals replaced by sums in the discrete case.  We assume that $\Omega$ is nonempty.
+ \end{itemize}
+
+\begin{thma}\bfs{Conjugate Prior Theorem}
+ The $(k+1)$-parameter exponential family given by
+\begin{align}
+\pi_{\mathbf{t}}(\boldsymbol{\theta})=\exp \left\{\sum_{j=1}^{k} \eta_{j}(\boldsymbol{\theta}) t_{j}-t_{k+1} B(\boldsymbol{\theta})-\log \omega(\mathbf{t})\right\}\label{eq:conj}
+\end{align}
+where $\mathbf{t}=\left(t_{1}, \ldots, t_{k+1}\right) \in \Omega$, is a conjugate prior to $p(\mathbf{x} \mid \boldsymbol{\theta})$ given by (1.6.18).
+\end{thma}
+\begin{proof}
+ If $p(\mathbf{x} \mid \boldsymbol{\theta})$ is given by \cref{eq:tezcd}  and $\pi_{\mathbf{t}}$, then
+\begin{align}
+&\pi(\boldsymbol{\theta} \mid \mathbf{x}) \propto p(\mathbf{x} \mid \boldsymbol{\theta}) \pi_{\mathbf{t}}(\boldsymbol{\theta}) \propto \exp \left\{\sum_{j=1}^{k} \eta_{j}(\boldsymbol{\theta})\left(\sum_{i=1}^{n} T_{j}\left(x_{i}\right)+t_{j}\right)-\left(t_{k+1}+n\right) B(\boldsymbol{\theta})\right\} \label{eq:kjrfda}\\
+&\propto \pi_{\mathbf{s}}(\boldsymbol{\theta})\nn
+\end{align}
+where
+\begin{align*}
+\mathbf{s}=\left(s_{1}, \ldots, s_{k+1}\right)^{T}=\left(t_{1}+\sum_{i=1}^{n} T_{1}\left(x_{i}\right), \ldots, t_{k}+\sum_{i=1}^{n} T_{k}\left(x_{i}\right), t_{k+1}+n\right)^{T}
+\end{align*}
+and $\propto$ indicates that the two sides are proportional functions of $\boldsymbol{\theta}$. Because two probability densities that are proportional must be equal, $\pi(\boldsymbol{\theta} \mid \mathbf{x})=\pi_{\mathbf{s}}(\boldsymbol{\theta})$.
+\end{proof}
+\begin{rema}\bfs{updating formula}
+It is an updating formula in the sense that as data $x_{1}, \ldots, x_{n}$ become available, the parameter $\mathbf{t}$ of the prior distribution is updated to $\mathbf{s}=(\mathbf{t}+\mathbf{a})$, where $\mathbf{a}=\left(\sum_{i=1}^{n} T_{1}\left(x_{i}\right), \ldots, \sum_{i=1}^{n} T_{k}\left(x_{i}\right), n\right)^{T} .$
+\end{rema}
+
+\begin{exma}
+  Suppose $X_{1}, \ldots, X_{n}$ is a $\mathcal{N}\left(\theta, \sigma_{0}^{2}\right)$ sample, where $\sigma_{0}^{2}$ is known and $\theta$ is unknown. To choose a prior distribution for $\theta$, we consider the conjugate family of the model defined by \cref{eq:conj}. For $n=1$
+\begin{align*}
+p(x \mid \theta) \propto \exp \left\{\frac{\theta x}{\sigma_{0}^{2}}-\frac{\theta^{2}}{2 \sigma_{0}^{2}}\right\} .
+\end{align*}
+This is a one-parameter exponential family with
+\begin{align*}
+T_{1}(x)=x, \eta_{1}(\theta)=\frac{\theta}{\sigma_{0}^{2}}, B(\theta)=\frac{\theta^{2}}{2 \sigma_{0}^{2}} .
+\end{align*}
+The conjugate two-parameter exponential family given by \cref{eq:conj} has density
+\begin{align}
+\pi_{\mathbf{t}}(\theta)=\exp \left\{\frac{\theta}{\sigma_{0}^{2}} t_{1}-\frac{\theta^{2}}{2 \sigma_{0}^{2}} t_{2}-\log \omega\left(t_{1}, t_{2}\right)\right\} \label{eq:dmnfc}
+\end{align}
+Upon completing the square, we obtain
+\begin{align}
+\pi_{\mathrm{t}}(\theta) \propto \exp \left\{-\frac{t_{2}}{2 \sigma_{0}^{2}}\left(\theta-\frac{t_{1}}{t_{2}}\right)^{2}\right\} \label{eq:mcnsfde}.
+\end{align}
+Thus, $\pi_{\mathrm{t}}(\theta)$ is defined only for $t_{2}>0$ and all $t_{1}$ and is the \tb{$\mathcal{N}\left(t_{1} / t_{2}, \sigma_{0}^{2} / t_{2}\right)$ density}. 
+
+\tb{Our conjugate family, therefore, consists of all $\mathcal{N}\left(\eta_{0}, \tau_{0}^{2}\right)$ distributions where $\eta_{0}$ varies freely and $\tau_{0}^{2}$ is positive.}
+
+
+If we start with a $\mathcal{N}\left(\eta_{0}, \tau_{0}^{2}\right)$ prior density, we must have in the $\left(t_{1}, t_{2}\right)$ parametrization
+\begin{align*}
+t_{2}=\frac{\sigma_{0}^{2}}{\tau_{0}^{2}}, \quad t_{1}=\frac{\eta_{0} \sigma_{0}^{2}}{\tau_{0}^{2}} .
+\end{align*}
+By the updating rule \cref{eq:kjrfda}, if we observe $\sum X_{i}=s$, the posterior has a density as the family \cref{eq:dmnfc} with
+\begin{align*}
+t_{2}(n)=\frac{\sigma_{0}^{2}}{\tau_{0}^{2}}+n, \quad t_{1}(s)=\frac{\eta_{0} \sigma_{0}^{2}}{\tau_{0}^{2}}+s .
+\end{align*}
+Using \cref{eq:mcnsfde}, we find that $\pi(\theta \mid \mathbf{x})$ is a normal density with mean
+\begin{align*}
+\mu(s, n)=\frac{t_{1}(s)}{t_{2}(n)}=\left(\frac{\sigma_{0}^{2}}{\tau_{0}^{2}}+n\right)^{-1}\left[s+\frac{\eta_{0} \sigma_{0}^{2}}{\tau_{0}^{2}}\right]
+\end{align*}
+and variance
+\begin{align*}
+\tau_{0}^{2}(n)=\frac{\sigma_{0}^{2}}{t_{2}(n)}=\left(\frac{1}{\tau_{0}^{2}}+\frac{n}{\sigma_{0}^{2}}\right)^{-1} .
+\end{align*}
+\end{exma}
+
+
+
+\bibliographystyle{IEEEtran}
+\bibliography{IEEEabrv,StringDefinitions,adv_dnn}
+\end{document}
